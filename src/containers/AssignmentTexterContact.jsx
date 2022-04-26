@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import OldControls from "../components/AssignmentTexter/OldControls";
 import Controls from "../components/AssignmentTexter/Controls";
 import { applyScript } from "../lib/scripts";
 import gql from "graphql-tag";
@@ -286,7 +285,7 @@ export class AssignmentTexterContact extends React.Component {
 
   handleEditStatus = async (messageStatus, finishContact) => {
     const { contact } = this.props;
-    await this.props.mutations.editCampaignContactMessageStatus(
+    const res = await this.props.mutations.editCampaignContactMessageStatus(
       messageStatus,
       contact.id
     );
@@ -294,6 +293,7 @@ export class AssignmentTexterContact extends React.Component {
       await this.handleSubmitSurveys();
       this.props.onFinishContact();
     }
+    return res;
   };
 
   handleOptOut = async ({ optOutMessageText }) => {
@@ -393,11 +393,6 @@ export class AssignmentTexterContact extends React.Component {
   };
 
   render() {
-    const ControlsComponent =
-      /old=1/.test(document.location.search) ||
-      window.DEPRECATED_TEXTERUI === "GONE_SOON"
-        ? OldControls
-        : Controls;
     return (
       <div {...dataTest("assignmentTexterContactFirstDiv")}>
         {this.state.disabled &&
@@ -407,7 +402,7 @@ export class AssignmentTexterContact extends React.Component {
             {this.state.disabledText}
           </div>
         ) : null}
-        <ControlsComponent
+        <Controls
           handleNavigateNext={this.props.handleNavigateNext}
           handleNavigatePrevious={this.props.handleNavigatePrevious}
           contact={this.props.contact}
@@ -430,6 +425,7 @@ export class AssignmentTexterContact extends React.Component {
           onEditStatus={this.handleEditStatus}
           refreshData={this.props.refreshData}
           getMessageTextFromScript={this.getMessageTextFromScript}
+          updateCurrentContactById={this.props.updateCurrentContactById}
         />
         {this.props.contact.messageStatus === "needsMessage" &&
         window.NOT_IN_USA &&
@@ -472,7 +468,8 @@ AssignmentTexterContact.propTypes = {
   onExitTexter: PropTypes.func,
   messageStatusFilter: PropTypes.string,
   organizationId: PropTypes.string,
-  location: PropTypes.object
+  location: PropTypes.object,
+  updateCurrentContactById: PropTypes.func
 };
 
 const mutations = {
