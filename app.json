@@ -183,7 +183,7 @@
     }
   },
   "addons": [
-    "heroku-postgresql:standard-3",
+    "heroku-postgresql:essential-0",
     {
       "plan": "heroku-redis:mini",
       "options": {
