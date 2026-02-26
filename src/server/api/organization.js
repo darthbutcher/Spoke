@@ -146,7 +146,7 @@ export const resolvers = {
         // to make sure the system administrator has enabled it
         getConfig("ALLOW_SEND_ALL", null, { truthy: 1 }) &&
           getConfig("ALLOW_SEND_ALL", organization, { truthy: 1 }) &&
-          getFeatures(organization).ALLOW_SEND_ALL_ENABLED
+          getConfig("ALLOW_SEND_ALL_ENABLED", organization, { truthy: 1 })
       ),
     theme: async organization => {
       const themeOptions = {
