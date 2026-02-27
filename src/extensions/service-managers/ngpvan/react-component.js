@@ -30,7 +30,24 @@ export class OrgConfig extends React.Component {
         .number()
         .oneOf([0, 1, null])
         .nullable()
-        .transform(val => (isNaN(val) ? null : val))
+        .transform(val => (isNaN(val) ? null : val)),
+      NGP_VAN_WEBHOOK_BASE_URL: yup
+        .string()
+        .notRequired()
+        .nullable(),
+      NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION: yup
+        .string()
+        .oneOf(["true", "false", "", null])
+        .notRequired()
+        .nullable(),
+      NGP_VAN_ELECTION_CYCLE_FILTER: yup
+        .string()
+        .notRequired()
+        .nullable(),
+      NGP_VAN_CONTACT_TYPE: yup
+        .string()
+        .notRequired()
+        .nullable()
     });
     return (
       <div>
@@ -63,6 +80,35 @@ export class OrgConfig extends React.Component {
               { value: "1", label: "My Campaign" }
             ]}
             style={{ width: "100%" }}
+          />
+          <Form.Field
+            as={GSTextField}
+            label="Webhook Base URL (required for contact loading)"
+            name="NGP_VAN_WEBHOOK_BASE_URL"
+            fullWidth
+          />
+          <Form.Field
+            as={GSSelectField}
+            label="Cautious Cell Phone Selection"
+            name="NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION"
+            choices={[
+              { value: "", label: "Default (true)" },
+              { value: "true", label: "True – only import verified cell phones" },
+              { value: "false", label: "False – import all phone types" }
+            ]}
+            style={{ width: "100%" }}
+          />
+          <Form.Field
+            as={GSTextField}
+            label="Election Cycle Filter (e.g. 2024)"
+            name="NGP_VAN_ELECTION_CYCLE_FILTER"
+            fullWidth
+          />
+          <Form.Field
+            as={GSTextField}
+            label="Contact Type (default: SMS Text)"
+            name="NGP_VAN_CONTACT_TYPE"
+            fullWidth
           />
           <Form.Submit
             as={GSSubmitButton}

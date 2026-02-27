@@ -18,7 +18,11 @@ export async function getOrganizationData({ organization, user, loaders }) {
   const {
     NGP_VAN_API_KEY_ENCRYPTED,
     NGP_VAN_APP_NAME,
-    NGP_VAN_DATABASE_MODE
+    NGP_VAN_DATABASE_MODE,
+    NGP_VAN_WEBHOOK_BASE_URL,
+    NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION,
+    NGP_VAN_ELECTION_CYCLE_FILTER,
+    NGP_VAN_CONTACT_TYPE
   } = features;
   return {
     // data is any JSON-able data that you want to send.
@@ -27,7 +31,11 @@ export async function getOrganizationData({ organization, user, loaders }) {
     data: {
       NGP_VAN_API_KEY_ENCRYPTED: NGP_VAN_API_KEY_ENCRYPTED && "<Encrypted>",
       NGP_VAN_APP_NAME,
-      NGP_VAN_DATABASE_MODE: String(NGP_VAN_DATABASE_MODE)
+      NGP_VAN_DATABASE_MODE: String(NGP_VAN_DATABASE_MODE),
+      NGP_VAN_WEBHOOK_BASE_URL,
+      NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION,
+      NGP_VAN_ELECTION_CYCLE_FILTER,
+      NGP_VAN_CONTACT_TYPE
     },
     // fullyConfigured: null means (more) configuration is optional -- maybe not required to be enabled
     // fullyConfigured: true means it is fully enabled and configured for operation
@@ -48,13 +56,21 @@ export async function onOrganizationUpdateSignal({
   const {
     NGP_VAN_API_KEY_ENCRYPTED,
     NGP_VAN_APP_NAME,
-    NGP_VAN_DATABASE_MODE
+    NGP_VAN_DATABASE_MODE,
+    NGP_VAN_WEBHOOK_BASE_URL,
+    NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION,
+    NGP_VAN_ELECTION_CYCLE_FILTER,
+    NGP_VAN_CONTACT_TYPE
   } = updatedFeatures;
   return {
     data: {
       NGP_VAN_API_KEY_ENCRYPTED: NGP_VAN_API_KEY_ENCRYPTED && "<Encrypted>",
       NGP_VAN_APP_NAME,
-      NGP_VAN_DATABASE_MODE: String(NGP_VAN_DATABASE_MODE)
+      NGP_VAN_DATABASE_MODE: String(NGP_VAN_DATABASE_MODE),
+      NGP_VAN_WEBHOOK_BASE_URL,
+      NGP_VAN_CAUTIOUS_CELL_PHONE_SELECTION,
+      NGP_VAN_ELECTION_CYCLE_FILTER,
+      NGP_VAN_CONTACT_TYPE
     },
     fullyConfigured: true
   };
