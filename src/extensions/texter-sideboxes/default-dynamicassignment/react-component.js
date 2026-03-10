@@ -2,8 +2,8 @@ import type from "prop-types";
 import React from "react";
 import * as yup from "yup";
 import Form from "react-formal";
-import Badge from "@material-ui/core/Badge";
-import Button from "@material-ui/core/Button";
+import Badge from "@mui/material/Badge";
+import Button from "@mui/material/Button";
 import { withRouter } from "react-router";
 import { gql } from "@apollo/client";
 import GSTextField from "../../../components/forms/GSTextField";
@@ -159,9 +159,9 @@ export class TexterSideboxClass extends React.Component {
         !assignment.unrepliedCount &&
         settingsData.dynamicAssignmentNothingToDoMessage ? (
           // assignment summary when there is nothing to do
-          <div style={{ marginBottom: "8px", marginLeft: "12px" }}>
+          (<div style={{ marginBottom: "8px", marginLeft: "12px" }}>
             {settingsData.dynamicAssignmentNothingToDoMessage}
-          </div>
+          </div>)
         ) : null}
       </div>
     );

@@ -7,8 +7,8 @@ import { dataTest } from "../lib/attributes";
 import GSTextField from "./forms/GSTextField";
 import GSSubmitButton from "./forms/GSSubmitButton";
 
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 const configurableFields = {
   ACTION_HANDLERS: {

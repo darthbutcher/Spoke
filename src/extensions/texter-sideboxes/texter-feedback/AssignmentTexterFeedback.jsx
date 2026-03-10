@@ -3,17 +3,17 @@ import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { gql } from "@apollo/client";
 
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import StepContent from "@material-ui/core/StepContent";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import WarningIcon from "@material-ui/icons/Warning";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import LinkIcon from "@material-ui/icons/Link";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import StepContent from "@mui/material/StepContent";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import WarningIcon from "@mui/icons-material/Warning";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import LinkIcon from "@mui/icons-material/Link";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
 
 import loadData from "../../../containers/hoc/load-data";
 import { defaults } from "./config";
@@ -185,7 +185,7 @@ class AssignmentTexterFeedback extends Component {
               target="_blank"
               color="secondary"
               href={moreInfo}
-            >
+              size="large">
               <LinkIcon />
             </IconButton>
           )}

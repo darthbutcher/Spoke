@@ -5,10 +5,10 @@ import * as yup from "yup";
 import Form from "react-formal";
 import { css } from "aphrodite";
 
-import CheckIcon from "@material-ui/icons/Check";
-import DoneIcon from "@material-ui/icons/Done";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CheckIcon from "@mui/icons-material/Check";
+import DoneIcon from "@mui/icons-material/Done";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import GSTextField from "../../../components/forms/GSTextField";
 import TagChip from "../../../components/TagChip";

@@ -11,8 +11,8 @@ import GSColorPicker from "../../components/forms/GSColorPicker";
 import GSForm from "../../components/forms/GSForm";
 import GSSubmitButton from "../../components/forms/GSSubmitButton";
 
-import Snackbar from "@material-ui/core/Snackbar";
-import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from '@mui/material/Alert';
 
 const ThemeEditor = props => {
   const palette = props.muiTheme.palette;

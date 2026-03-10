@@ -1,9 +1,11 @@
 import fetch from "isomorphic-fetch";
-import { ApolloClient, ApolloLink } from "@apollo/client";
+import { ApolloClient, ApolloLink, split } from "@apollo/client";
 import { createHttpLink } from "@apollo/client/link/http";
 import { onError } from "@apollo/client/link/error";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { InMemoryCache } from "@apollo/client/cache";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient as createWsClient } from "graphql-ws";
 import omitDeep from "omit-deep-lodash";
 
 const httpLink = createHttpLink({
@@ -35,7 +37,39 @@ const cleanTypenameLink = new ApolloLink((operation, forward) => {
   return forward ? forward(operation) : null;
 });
 
-const link = cleanTypenameLink.concat(errorLink).concat(httpLink);
+const httpChain = cleanTypenameLink.concat(errorLink).concat(httpLink);
+
+// ── WebSocket link for GraphQL subscriptions ───────────────────────────────
+// Only created in browser environments (the server bundle does not run this).
+// keepAlive: 30 000 ms prevents Heroku's 55-second idle-connection timeout.
+const wsLink =
+  typeof window !== "undefined"
+    ? new GraphQLWsLink(
+        createWsClient({
+          url: `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
+            window.location.host
+          }/subscriptions`,
+          keepAlive: 30000,
+          retryAttempts: 5,
+          connectionAckWaitTimeout: 10000
+        })
+      )
+    : null;
+
+// Route subscription operations to the WS link, everything else via HTTP.
+const link = wsLink
+  ? split(
+      ({ query }) => {
+        const def = getMainDefinition(query);
+        return (
+          def.kind === "OperationDefinition" &&
+          def.operation === "subscription"
+        );
+      },
+      wsLink,
+      httpChain
+    )
+  : httpChain;
 
 const cache = new InMemoryCache({
   addTypename: true,

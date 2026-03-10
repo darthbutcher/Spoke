@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
 import React from "react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import MenuItem from "@material-ui/core/MenuItem";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import MenuItem from "@mui/material/MenuItem";
 import SearchBar from "material-ui-search-bar";
 import moment from "moment";
-import IconButton from "@material-ui/core/IconButton";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import Menu from "@material-ui/core/Menu";
-import Pagination from "@material-ui/lab/Pagination";
+import IconButton from "@mui/material/IconButton";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import Menu from "@mui/material/Menu";
+import Pagination from '@mui/material/Pagination';
 
 const pageSize = 50;
 
@@ -198,7 +198,7 @@ class AssignmentContactsList extends React.Component {
             onClick={this.openFilterMenu}
             aria-controls="contacts-sidebar-status-filter"
             aria-haspopup="true"
-          >
+            size="large">
             <FilterListIcon />
           </IconButton>
           <Menu

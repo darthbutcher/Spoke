@@ -4,14 +4,14 @@ import { flowRight as compose } from "lodash";
 import { withRouter } from "react-router";
 import { gql } from "@apollo/client";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
-import Popover from "@material-ui/core/Popover";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import Popover from "@mui/material/Popover";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 
 import { dataTest } from "../lib/attributes";
 import loadData from "./hoc/load-data";
@@ -124,7 +124,7 @@ export class UserMenuBase extends Component {
         <IconButton
           {...dataTest("userMenuButton")}
           onClick={this.handleTouchTap}
-        >
+          size="large">
           {this.renderAvatar(currentUser)}
         </IconButton>
         <Popover

@@ -5,22 +5,22 @@ import _ from "lodash";
 import * as yup from "yup";
 import Form from "react-formal";
 
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
 
 import GSForm from "../../../components/forms/GSForm";
 import GSSubmitButton from "../../../components/forms/GSSubmitButton";
@@ -338,7 +338,7 @@ export class CampaignConfigBase extends React.Component {
                               <IconButton
                                 disabled={!assignedCount}
                                 onClick={() => unassignAreaCode(areaCode)}
-                              >
+                                size="large">
                                 <RemoveIcon />
                               </IconButton>
                             )}
@@ -351,7 +351,7 @@ export class CampaignConfigBase extends React.Component {
                                   assignedNumberCount === numbersNeeded
                                 }
                                 onClick={() => assignAreaCode(areaCode)}
-                              >
+                                size="large">
                                 <AddIcon />
                               </IconButton>
                             )}

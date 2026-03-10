@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import { gql } from "@apollo/client";
 import { StyleSheet, css } from "aphrodite";
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import CheckIcon from "@material-ui/icons/Check";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import CheckIcon from "@mui/icons-material/Check";
 
 import loadData from "../../containers/hoc/load-data";
 import MessageResponse from "./MessageResponse";
@@ -179,7 +179,7 @@ export class InnerConversationPreviewModal extends Component {
           }
           placement="left"
         >
-          <IconButton onClick={this.handleCopyToClipboard}>
+          <IconButton onClick={this.handleCopyToClipboard} size="large">
             {this.state.justCopied ? (
               <CheckIcon
                 style={{ color: this.props.muiTheme.palette.success.main }}

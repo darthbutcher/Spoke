@@ -5,7 +5,7 @@ import { gql } from "@apollo/client";
 import { StyleSheet, css } from "aphrodite";
 import theme from "../styles/theme";
 import { withRouter } from "react-router";
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
 
 export const styles = StyleSheet.create({
   container: {
@@ -37,7 +37,7 @@ class Home extends React.Component {
     orgLessUser: false
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const user = this.props.data.currentUser;
     if (user) {
       if (user.organizations.length > 0) {

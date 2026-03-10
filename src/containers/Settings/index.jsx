@@ -2,24 +2,25 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { gql } from "@apollo/client";
+import { withAdminPerms } from "../context/AdminPermissionsContext";
 import Form from "react-formal";
 import moment from "moment";
 import * as yup from "yup";
 import { StyleSheet, css } from "aphrodite";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import loadData from "../hoc/load-data";
 import withSetTheme from "../hoc/withSetTheme";
 import GSSubmitButton from "../../components/forms/GSSubmitButton";
@@ -366,7 +367,7 @@ class Settings extends React.Component {
                 title="Texter UI Defaults"
                 style={this.getCardHeaderStyle()}
                 action={
-                  <IconButton>
+                  <IconButton size="large">
                     <ExpandMoreIcon />
                   </IconButton>
                 }
@@ -409,7 +410,7 @@ class Settings extends React.Component {
               title="Overriding default settings"
               style={this.getCardHeaderStyle()}
               action={
-                <IconButton>
+                <IconButton size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               }
@@ -447,14 +448,13 @@ class Settings extends React.Component {
             </Collapse>
           </Card>
         )}
-
-        {this.props.data.organization && this.props.params.adminPerms && (
+        {this.props.data.organization && this.props.adminPerms && (
           <Card>
             <CardHeader
               title="External configuration"
               style={this.getCardHeaderStyle()}
               action={
-                <IconButton>
+                <IconButton size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               }
@@ -711,7 +711,7 @@ const mutations = {
 };
 
 const EnhancedSettings = withSetTheme(
-  loadData({ queries, mutations})(Settings)
+  loadData({ queries, mutations })(withAdminPerms(Settings))
 );
 
 export default EnhancedSettings;

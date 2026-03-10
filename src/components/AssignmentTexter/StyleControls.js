@@ -1,9 +1,9 @@
-import { StyleSheet, css } from "aphrodite";
+import { StyleSheet } from "aphrodite";
 
 const bgGrey = "rgb(214, 215, 223)";
 
 export const messageListStyles = {
-  // passesd directly to <MessageList>
+  // passed directly to <MessageList>
   messageList: {
     overflow: "hidden",
     overflow: "-moz-scrollbars-vertical",
@@ -29,7 +29,7 @@ export const messageListStyles = {
     marginRight: "20%",
     marginLeft: "10px",
     color: "white",
-    backgroundColor: "hsla(206, 99%, 31%, 0.74)", //#01579B",
+    backgroundColor: "hsla(206, 99%, 31%, 0.74)",
     borderRadius: "16px",
     fontSize: "110%",
     lineHeight: "120%",
@@ -58,26 +58,29 @@ export const inlineStyles = {
 };
 
 export const flexStyles = StyleSheet.create({
+  // ── Root container ───────────────────────────────────────────────────────
+  // Uses position:fixed so the texter fills the full viewport on mobile.
+  // `position: absolute` was changed to `fixed` to stay correct even when
+  // parent elements have transforms or scroll — common on mobile browsers.
   topContainer: {
     margin: 0,
-    position: "absolute",
+    position: "fixed",
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
     display: "flex",
     flexDirection: "column",
-    //messages can be scrolled through and height/width is responsive
     height: "100%",
     "@media(max-width: 420px)": {
       fontFamily: "Poppins"
     }
   },
+
+  // ── Sidebox (right panel, desktop only) ──────────────────────────────────
   popoverSideboxesInner: {
-    // expand to fill the whole popover
     width: "100%",
     height: "100%",
-    // show campaign header in-view
     top: "50px",
     left: "18px",
     padding: "20px"
@@ -86,7 +89,6 @@ export const flexStyles = StyleSheet.create({
     width: "85%",
     height: "85%",
     "@media(min-height: 800px)": {
-      // if it's too tall, the current question options are too far away
       height: "50%"
     }
   },
@@ -105,10 +107,11 @@ export const flexStyles = StyleSheet.create({
   },
   sectionSideBox: {
     flex: "0 1 240px",
-    overflowY: "scroll",
+    overflowY: "auto",
     textAlign: "center",
-    overflow: "hidden scroll",
+    overflow: "hidden auto",
     maxWidth: "240px",
+    // Hidden on phones; visible on tablet+ (575 px matches existing breakpoint)
     "@media(max-width: 575px)": {
       display: "none"
     }
@@ -121,54 +124,54 @@ export const flexStyles = StyleSheet.create({
     padding: 24,
     borderLeft: "1px solid #C1C3CC"
   },
+
+  // ── Message thread area ───────────────────────────────────────────────────
+  // Replaced hardcoded `height: 53%` at certain viewport heights with
+  // `flex: 1 1 0` so the thread fills available space, letting the compose
+  // section (below) stay anchored at the bottom regardless of viewport height.
+  // `minHeight: 0` is required for flex children to shrink below content size.
   superSectionMessageBox: {
-    height: "100%",
-    "@media(min-height: 300px) and (max-Height: 700px)": {
-      height: "100%"
-    },
-    "@media(min-height: 701px) and (max-Height: 1000px)": {
-      height: "53%"
-    },
-    overflowY: "scroll",
-    overflow: "-moz-scrollbars-vertical",
+    flex: "1 1 0",
+    minHeight: 0,
+    overflowY: "auto",
+    overflow: "auto",
     overflowX: "hidden",
-    // for sidebar
     display: "flex",
     flexDirection: "row"
   },
-  /// * Section Scrolling Message Thread
   sectionMessageThread: {
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
     flex: "1 1 auto",
-    overflowY: "scroll"
+    overflowY: "auto"
   },
   sectionLeftSideBox: {
     flex: "1 0 260px",
     maxWidth: 260,
-    overflow: "hidden scroll"
+    overflow: "hidden auto"
   },
   superSectionMessagePage: {
     display: "flex",
-    flexGrow: 1,
-    overflow: "hidden scroll"
+    flex: "1 1 0",
+    minHeight: 0,
+    overflow: "hidden auto"
   },
   superSectionMessageListAndControls: {
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
+    minHeight: 0,
     maxHeight: "100%"
   },
-  /// * Section OptOut Dialog
+
+  // ── Opt-out dialog ────────────────────────────────────────────────────────
   sectionOptOutDialog: {
     padding: "4px 10px 9px 10px",
     zIndex: 2000,
     backgroundColor: "white",
     overflow: "visible",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
     }
   },
@@ -178,91 +181,77 @@ export const flexStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end"
   },
-  /// * Section Texting Input Field
+
+  // ── Compose area ──────────────────────────────────────────────────────────
+  // `flex: 0 0 auto` keeps the compose field from growing/shrinking.
+  // The field is always visible at the bottom of the fixed container.
   sectionMessageField: {
-    // messageField
-    flex: "0 0 20px",
+    flex: "0 0 auto",
     padding: "0px 16px",
     marginBottom: "8px"
   },
   subSectionMessageFieldTextField: {
     "@media(max-width: 420px)": {
-      overflowY: "scroll !important"
+      overflowY: "auto"
     }
   },
-  /// * Section Reply/Exit Buttons
+
+  // ── Action buttons ────────────────────────────────────────────────────────
   sectionButtons: {
     flexGrow: "0",
     flexShrink: "0",
-    // flexBasis: ${130px|190px}", // stretches and shrinks more quickly than message
     flexDirection: "column",
     display: "flex",
-    // flexWrap: "wrap",
     overflow: "hidden",
     position: "relative",
     paddingLeft: 12
   },
   subButtonsAnswerButtons: {
-    flex: "1 1 auto", // keeps bottom buttons in place
-    // height:105: webkit needs constraint on height sometimes
-    //   during the inflection point of showing the shortcut-buttons
-    //   without the height, the exit buttons get pushed down oddly
-    // internal:
+    flex: "1 1 auto",
     margin: "9px 0px 0px 9px",
     width: "100%"
-    // similar to 572 below, but give room for other shortcut-buttons
   },
   subSubButtonsAnswerButtonsCurrentQuestion: {
     marginBottom: "12px",
-    //flex: "0 0 auto",
     width: "100%",
-    // for mobile:
     whiteSpace: "nowrap",
     overflow: "hidden"
   },
   subSubAnswerButtonsColumns: {
     height: "0px",
     "@media(min-height: 600px)": {
-      height: "37px" // TODO
+      height: "37px"
     },
     display: "inline-block",
-    //flex: "1 1 50%",
     overflow: "hidden",
     position: "relative"
   },
+  // Updated from fixed 40px to minHeight: 44px (WCAG 2.5.5 touch target)
   subButtonsExitButtons: {
-    // next/prev/skip/optout
-    // width: "100%", default is better on mobile
-    height: "40px",
+    minHeight: "44px",
     margin: "9px",
-    // default works better for mobile right margin
-    // flex: "0 0 40px",
-    // internal:
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
     alignContent: "space-between",
-    // to 'win' against absoslute positioned content above it:
     zIndex: "10",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
     }
   },
-  /// * Section Send Button
+
+  // ── Send button row ───────────────────────────────────────────────────────
+  // Replaced hardcoded `height: 72px` with `minHeight: 60px` so the row
+  // expands on accessibility text-size increases without clipping.
   sectionSend: {
-    //sendButtonWrapper
-    height: "72px",
-    flex: `0 0 auto`,
+    flex: "0 0 auto",
+    minHeight: "60px",
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
     alignContent: "space-between",
     padding: "9px 9px 9px 21px",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
     }
   },
@@ -270,19 +259,17 @@ export const flexStyles = StyleSheet.create({
     flex: "1 1 auto",
     width: "70%",
     height: "100%",
-    //borderRadius: "0px",
     color: "white"
   },
+
+  // ── Utility / button variants ─────────────────────────────────────────────
   flatButton: {
     height: "40px",
     border: "1px solid #949494",
-    // FlatButton property, setting here, overrides hover
-    // backgroundColor: "white",
     borderRadius: "0",
     boxShadow: "none",
     maxWidth: "300px",
     "@media(max-width: 450px)": {
-      // mobile crunch
       minWidth: "auto"
     }
   },
@@ -290,13 +277,11 @@ export const flexStyles = StyleSheet.create({
     backgroundColor: "#FFF",
     maxWidth: "300px",
     "@media(max-width: 450px)": {
-      // mobile crunch
       minWidth: "auto"
     }
   },
   flatButtonLabelMobile: {
     "@media(max-width: 327px)": {
-      // mobile crunch
       display: "none"
     }
   }

@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import Paper from "@material-ui/core/Paper";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Button from "@material-ui/core/Button";
-import MenuIcon from "@material-ui/icons/Menu";
-import CloseIcon from "@material-ui/icons/Close";
-import IconButton from "@material-ui/core/IconButton";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Button from "@mui/material/Button";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 import { withRouter } from "react-router";
 import _ from "lodash";
@@ -40,7 +40,7 @@ const Navigation = function Navigation(props) {
           }}
         >
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <IconButton onClick={props.onToggleMenu}>
+            <IconButton onClick={props.onToggleMenu} size="large">
               <CloseIcon />
             </IconButton>
           </div>
@@ -64,7 +64,7 @@ const Navigation = function Navigation(props) {
     );
   } else {
     return (
-      <IconButton onClick={props.onToggleMenu}>
+      <IconButton onClick={props.onToggleMenu} size="large">
         <MenuIcon />
       </IconButton>
     );

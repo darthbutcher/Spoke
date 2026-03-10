@@ -3,8 +3,8 @@ import React from "react";
 import Navigation from "../components/Navigation";
 import { withRouter } from "react-router";
 import { dataTest } from "../lib/attributes";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
 class AdminNavigation extends React.Component {
   urlFromPath(path) {

@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Link as RouterLink } from "react-router";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import Link from "@material-ui/core/Link";
+import LinearProgress from "@mui/material/LinearProgress";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import Link from "@mui/material/Link";
 import { getHighestRole } from "../lib/permissions";
 import theme from "../styles/theme";
 

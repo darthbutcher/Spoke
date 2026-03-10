@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { createTheme } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { ThemeProvider, StyledEngineProvider, adaptV4Theme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Outlet } from "react-router-dom";
 
 import { defaultTheme } from "../styles/mui-theme";
 import ThemeContext from "../containers/context/ThemeContext";
@@ -19,12 +20,12 @@ const formatTheme = newTheme => {
   };
 };
 
-const App = ({ children }) => {
+const App = () => {
   const [theme, setTheme] = useState(defaultTheme);
-  let muiTheme = createTheme(defaultTheme);
+  let muiTheme = createTheme(adaptV4Theme(defaultTheme));
   try {
     // if a bad value is saved this will fail.
-    muiTheme = createTheme(theme);
+    muiTheme = createTheme(adaptV4Theme(theme));
   } catch (e) {
     console.error("failed to create theme", theme);
   }
@@ -44,16 +45,18 @@ const App = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={{ muiTheme, setTheme: handleSetTheme }}>
-      <ThemeProvider theme={muiTheme}>
-        <CssBaseline />
-        <div styles={{ height: "100%" }}>{children}</div>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={muiTheme}>
+          <CssBaseline />
+          <div style={{ height: "100%" }}>
+            <Outlet />
+          </div>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </ThemeContext.Provider>
   );
 };
 
-App.propTypes = {
-  children: PropTypes.object
-};
+App.propTypes = {};
 
 export default App;

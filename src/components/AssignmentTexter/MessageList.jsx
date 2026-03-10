@@ -3,21 +3,21 @@ import React from "react";
 import { Link as RouterLink } from "react-router";
 import moment from "moment";
 
-import HeadsetIcon from "@material-ui/icons/Headset";
-import ImageIcon from "@material-ui/icons/Image";
-import TvIcon from "@material-ui/icons/Tv";
-import AttachmentIcon from "@material-ui/icons/Attachment";
-import NotInterestedIcon from "@material-ui/icons/NotInterested";
-import Divider from "@material-ui/core/Divider";
-import Avatar from "@material-ui/core/Avatar";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import Collapse from "@material-ui/core/Collapse";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import HeadsetIcon from "@mui/icons-material/Headset";
+import ImageIcon from "@mui/icons-material/Image";
+import TvIcon from "@mui/icons-material/Tv";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import NotInterestedIcon from "@mui/icons-material/NotInterested";
+import Divider from "@mui/material/Divider";
+import Avatar from "@mui/material/Avatar";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import Collapse from "@mui/material/Collapse";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 import withMuiTheme from "../../containers/hoc/withMuiTheme";
 

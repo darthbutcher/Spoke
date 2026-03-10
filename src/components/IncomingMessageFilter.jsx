@@ -2,22 +2,22 @@ import React, { Component } from "react";
 import type from "prop-types";
 import _ from "lodash";
 
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
-import Switch from "@material-ui/core/Switch";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Collapse from "@mui/material/Collapse";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import IconButton from "@mui/material/IconButton";
+import Switch from "@mui/material/Switch";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Input from "@mui/material/Input";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import theme from "../styles/theme";
 import { dataSourceItem } from "./utils";
@@ -127,7 +127,7 @@ class IncomingMessageFilter extends Component {
     };
   }
 
-  componentWillUpdate = (nextProps, nextState) => {
+  UNSAFE_componentWillUpdate = (nextProps, nextState) => {
     if (nextProps.texterSearchText && !this.state.texterSearchText) {
       this.state.texterSearchText = nextProps.texterSearchText;
     }
@@ -249,7 +249,7 @@ class IncomingMessageFilter extends Component {
         <CardHeader
           title="Message Filter"
           action={
-            <IconButton>
+            <IconButton size="large">
               <ExpandMoreIcon />
             </IconButton>
           }

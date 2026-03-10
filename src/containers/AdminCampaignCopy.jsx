@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 
 import { withRouter, Link } from "react-router";
 import loadData from "./hoc/load-data";

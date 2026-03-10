@@ -1,22 +1,22 @@
 /* eslint-disable no-unused-vars */
-import DeleteIcon from "@material-ui/icons/Delete";
-import Avatar from "@material-ui/core/Avatar";
-import FolderIcon from "@material-ui/icons/Folder";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Avatar from "@mui/material/Avatar";
+import FolderIcon from "@mui/icons-material/Folder";
+import TextField from "@mui/material/TextField";
+import Autocomplete from '@mui/material/Autocomplete';
 import LoadingIndicator from "../../../components/LoadingIndicator";
 import _ from "lodash";
 import type from "prop-types";
 import React from "react";
 import * as yup from "yup";
 import Form from "react-formal";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import IconButton from "@material-ui/core/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import IconButton from "@mui/material/IconButton";
 import GSForm from "../../../components/forms/GSForm";
 import GSSubmitButton from "../../../components/forms/GSSubmitButton";
 import fetch from "node-fetch";
@@ -24,7 +24,7 @@ import {
   CIVICRM_INTEGRATION_GROUPSEARCH_ENDPOINT,
   CIVICRM_MINQUERY_SIZE
 } from "./const";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import { log } from "../../../lib/log";
 
 export default function CiviCRMLoaderField(props) {
@@ -94,7 +94,7 @@ export default function CiviCRMLoaderField(props) {
             onClose={() => {
               setOpen(false);
             }}
-            getOptionSelected={(option, theValue) =>
+            isOptionEqualToValue={(option, theValue) =>
               theValue ? option.title === theValue.title : false
             }
             getOptionLabel={option => (option ? option.title : "")}
@@ -155,7 +155,7 @@ export default function CiviCRMLoaderField(props) {
                 </ListItemAvatar>
                 <ListItemText primary={x.title} />
                 <ListItemSecondaryAction onClick={() => removeId(x.id)}>
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end" aria-label="delete" size="large">
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>

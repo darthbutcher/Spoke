@@ -7,19 +7,19 @@ import GSForm from "../../../components/forms/GSForm";
 import GSTextField from "../../../components/forms/GSTextField";
 import GSSubmitButton from "../../../components/forms/GSSubmitButton";
 
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CreateIcon from "@material-ui/icons/Create";
-import IconButton from "@material-ui/core/IconButton";
+import Button from "@mui/material/Button";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreateIcon from "@mui/icons-material/Create";
+import IconButton from "@mui/material/IconButton";
 
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 import { css } from "aphrodite";
 
@@ -190,7 +190,7 @@ export class OrgConfig extends React.Component {
                 formButtonText: "Edit Account"
               })
             }
-          >
+            size="large">
             <CreateIcon />
           </IconButton>
           <IconButton
@@ -206,7 +206,7 @@ export class OrgConfig extends React.Component {
                   .filter(ele => ele !== null)
               });
             }}
-          >
+            size="large">
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>

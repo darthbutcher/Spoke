@@ -5,10 +5,10 @@ import { Link as RouterLink, withRouter } from "react-router";
 import { gql } from "@apollo/client";
 
 import MUIDataTable from "mui-datatables";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import IconButton from "@material-ui/core/IconButton";
-import Link from "@material-ui/core/Link";
-import Typography from "@material-ui/core/Typography";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import IconButton from "@mui/material/IconButton";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 import loadData from "../../containers/hoc/load-data";
 import { getHighestRole } from "../../lib/permissions";
@@ -81,7 +81,7 @@ export class IncomingMessageList extends Component {
     this.props.onConversationCountChanged(conversationCount);
   }
 
-  componentWillUpdate = () => {
+  UNSAFE_componentWillUpdate = () => {
     this.state.showAllRepliesLink =
       this.props.conversations.conversations.pageInfo.total > 0 &&
       this.props.campaignsFilter.campaignIds &&
@@ -235,7 +235,7 @@ export class IncomingMessageList extends Component {
                     event.stopPropagation();
                     this.handleOpenConversation(row);
                   }}
-                >
+                  size="large">
                   <OpenInNewIcon />
                 </IconButton>
               )}

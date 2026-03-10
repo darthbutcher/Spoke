@@ -2,23 +2,23 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import theme from "../../styles/theme";
 
-import Divider from "@material-ui/core/Divider";
-import ClearIcon from "@material-ui/icons/Clear";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import Divider from "@mui/material/Divider";
+import ClearIcon from "@mui/icons-material/Clear";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 const styles = {
   root: {},

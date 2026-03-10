@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 
 import { Message, cacheableData } from "../../models";
+import { pubsub, CONTACT_STATUS_CHANGED } from "../../pubsub";
 
 import { getSendBeforeTimeUtc } from "../../../lib/timezones";
 import { replaceEasyGsmWins } from "../../../lib/gsm";
@@ -289,5 +290,15 @@ export const sendMessage = async (
       }
     ];
   }
+
+  // Notify any subscribed texter screens that this contact's status changed.
+  pubsub.publish(CONTACT_STATUS_CHANGED, {
+    contactStatusChanged: {
+      assignmentId: String(contact.assignment_id),
+      contactId: String(contact.id),
+      messageStatus: contact.message_status
+    }
+  });
+
   return contact;
 };

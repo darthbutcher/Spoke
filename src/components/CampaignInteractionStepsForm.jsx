@@ -3,16 +3,16 @@ import React from "react";
 import Form from "react-formal";
 import * as yup from "yup";
 
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import { Typography } from "@material-ui/core";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import { Typography } from "@mui/material";
 
 import CampaignFormSectionHeading from "./CampaignFormSectionHeading";
 import GSForm from "./forms/GSForm";
@@ -272,7 +272,7 @@ export class CampaignInteractionStepsFormBase extends React.Component {
             <IconButton
               style={this.styles.pullRight}
               onClick={this.deleteStep(interactionStep.id).bind(this)}
-            >
+              size="large">
               <DeleteIcon />
             </IconButton>
             <ButtonGroup>

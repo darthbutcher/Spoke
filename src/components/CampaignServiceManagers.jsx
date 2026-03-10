@@ -1,9 +1,9 @@
 /* eslint no-console: 0 */
 import type from "prop-types";
 import React from "react";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
 import { getServiceManagerComponent } from "../extensions/service-managers/components";
 import withMuiTheme from "../containers/hoc/withMuiTheme";
 

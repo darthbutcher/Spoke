@@ -25,6 +25,8 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 import cors from "cors";
+import { WebSocketServer } from "ws";
+import { useServer as useWsServer } from "graphql-ws/use/ws";
 
 process.on("uncaughtException", ex => {
   log.error(ex);
@@ -64,12 +66,42 @@ const executableSchema = makeExecutableSchema({
   allowUndefinedInResolve: false
 });
 
+// ── GraphQL WebSocket server (subscriptions) ───────────────────────────────
+// Mounts at /subscriptions alongside the existing /graphql HTTP endpoint.
+// Heroku drops idle WebSocket connections after 55 s; the client-side
+// keepAlive of 30 s prevents silent disconnects.
+const wsServer = new WebSocketServer({ server: httpServer, path: "/subscriptions" });
+const wsServerCleanup = useWsServer(
+  {
+    schema: executableSchema,
+    context: async () => ({
+      loaders: createLoaders()
+      // Note: WebSocket connections authenticate via connectionParams on the
+      // client. Cookie-based auth is not forwarded over WS in this setup.
+      // Auth can be added here when needed using ctx.connectionParams.
+    })
+  },
+  wsServer
+);
+
 const server = new ApolloServer({
   typeDefs: schema,
   schema: executableSchema,
   resolvers,
   introspection: true,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    // Drain WebSocket connections gracefully on shutdown.
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await wsServerCleanup.dispose();
+          }
+        };
+      }
+    }
+  ],
   formatError: error => {
     if (process.env.SHOW_SERVER_ERROR || process.env.DEBUG) {
       if (error instanceof GraphQLError) {

@@ -2,14 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import Chart from "../components/Chart";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import Snackbar from "@material-ui/core/Snackbar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Snackbar from "@mui/material/Snackbar";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 import TexterStats from "../components/TexterStats";
 import OrganizationJoinLink from "../components/OrganizationJoinLink";
@@ -321,16 +321,15 @@ class AdminCampaignStats extends React.Component {
                   <ButtonGroup>
                     {!campaign.isArchived ? (
                       // edit
-                      <Button
+                      (<Button
                         {...dataTest("editCampaign")}
                         onClick={() =>
                           this.props.router.push(
                             `/admin/${organizationId}/campaigns/${campaignId}/edit`
                           )
                         }
-                      >
-                        Edit
-                      </Button>
+                      >Edit
+                                              </Button>)
                     ) : null}
                     <Button
                       {...dataTest("convoCampaign")}
@@ -501,7 +500,6 @@ class AdminCampaignStats extends React.Component {
             <Stat title="Opt-outs" count={campaign.stats.optOutsCount} />
           </div>
         </div>
-
         {groupedResponses.hasGroupedResponses ? (
           <CollapsibleCard title={"Grouped Responses"}>
             <div>{this.renderGroupedAnswerStats(groupedResponses)}</div>
@@ -518,7 +516,6 @@ class AdminCampaignStats extends React.Component {
             {this.renderSurveyStats()}
           </CollapsibleCard>
         )}
-
         {campaign.stats.errorCounts.length > 0 && (
           <CollapsibleCard title={"Sending Errors"} colorTheme={"warning"}>
             {this.renderErrorCounts()}{" "}

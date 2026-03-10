@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 export const DUE_DATE_ASC_SORT = {
   display: (

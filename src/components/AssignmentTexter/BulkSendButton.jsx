@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
  
 // This is because the Toolbar from material-ui seems to only apply the correct margins if the
 // immediate child is a Button or other type it recognizes. Can get rid of this if we remove material-ui

@@ -7,10 +7,10 @@ import theme from "../styles/theme";
 import DisplayLink from "../components/DisplayLink";
 import { StyleSheet, css } from "aphrodite";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
 const styles = StyleSheet.create({
   container: {

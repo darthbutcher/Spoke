@@ -6,9 +6,9 @@ import loadData from "./hoc/load-data";
 import { withRouter, Link as RouterLink } from "react-router";
 
 import MUIDataTable from "mui-datatables";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import Link from "@material-ui/core/Link";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import Link from "@mui/material/Link";
 
 import { StyleSheet, css } from "aphrodite";
 import theme from "../styles/theme";

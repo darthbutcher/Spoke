@@ -1,17 +1,17 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import CreateIcon from "@material-ui/icons/Create";
-import ClearIcon from "@material-ui/icons/Clear";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import Divider from "@material-ui/core/Divider";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Button from "@mui/material/Button";
+import CreateIcon from "@mui/icons-material/Create";
+import ClearIcon from "@mui/icons-material/Clear";
+import ListSubheader from "@mui/material/ListSubheader";
+import Divider from "@mui/material/Divider";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 import CannedResponseForm from "../CannedResponseForm";
 import { log } from "../../lib";

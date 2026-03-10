@@ -10,14 +10,14 @@ import GSForm from "../forms/GSForm";
 import GSTextField from "../forms/GSTextField";
 import withMuiTheme from "../../containers/hoc/withMuiTheme";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import Popover from "@material-ui/core/Popover";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Popover from "@mui/material/Popover";
 import SearchBar from "material-ui-search-bar";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import CreateIcon from "@material-ui/icons/Create";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CreateIcon from "@mui/icons-material/Create";
 
 import * as yup from "yup";
 import Form from "react-formal";
@@ -106,7 +106,7 @@ export class AssignmentTexterContactControls extends React.Component {
     window.removeEventListener("orientationchange", this.onResize);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     // we refresh sideboxes here because we need to compare previous state
     const newPopups = [];
     nextProps.enabledSideboxes &&
@@ -617,9 +617,7 @@ export class AssignmentTexterContactControls extends React.Component {
               flex: "1 1 auto"
             }}
             disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
+            variant="contained">
             Reopen
           </Button>
         );
@@ -632,9 +630,7 @@ export class AssignmentTexterContactControls extends React.Component {
               backgroundColor: this.props.muiTheme.palette.background.default
             }}
             disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
+            variant="contained">
             Skip
           </Button>
         );
@@ -1147,7 +1143,7 @@ export class AssignmentTexterContactControls extends React.Component {
           className={css(flexStyles.sectionMessageThread)}
           style={{
             backgroundColor:
-              this.props.muiTheme.palette.type === "light"
+              this.props.muiTheme.palette.mode === "light"
                 ? "#f0f0f0"
                 : this.props.muiTheme.palette.grey[700]
           }}
@@ -1245,7 +1241,7 @@ export class AssignmentTexterContactControls extends React.Component {
         className={css(flexStyles.topContainer)}
         style={{
           backgroundColor:
-            this.props.muiTheme.palette.type === "light"
+            this.props.muiTheme.palette.mode === "light"
               ? "#d6d7df"
               : this.props.muiTheme.palette.grey[800]
         }}

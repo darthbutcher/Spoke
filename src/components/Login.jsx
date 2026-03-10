@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import { StyleSheet, css } from "aphrodite";
 import theme from "../styles/theme";
 import withMuiTheme from "./../containers/hoc/withMuiTheme";
@@ -101,25 +101,21 @@ class Login extends React.Component {
         <div>
           {/* Only display sign up option if there is a nextUrl */}
           {true && ( // displaySignUp
-            <ButtonGroup fullWidth>
+            (<ButtonGroup fullWidth>
               <Button
-                color="default"
                 variant="contained"
                 onClick={() => this.handleClick("login")}
-                disabled={this.state.active === "login"}
-              >
+                disabled={this.state.active === "login"}>
                 Log In
               </Button>
               <Button
-                color="default"
                 variant="contained"
                 name="signup"
                 onClick={() => this.handleClick("signup")}
-                disabled={this.state.active === "signup"}
-              >
+                disabled={this.state.active === "signup"}>
                 Sign Up
               </Button>
-            </ButtonGroup>
+            </ButtonGroup>)
           )}
           <Paper className={css(this.styles.fieldContainer)}>
             <h2 className={css(this.styles.header)}>Welcome to Spoke</h2>

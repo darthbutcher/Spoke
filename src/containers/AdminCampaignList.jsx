@@ -1,18 +1,19 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "react-router";
 import { gql } from "@apollo/client";
+import AdminPermissionsContext from "./context/AdminPermissionsContext";
 
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import ArchiveIcon from "@material-ui/icons/Archive";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Paper from "@mui/material/Paper";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 import LoadingIndicator from "../components/LoadingIndicator";
 import { dataTest } from "../lib/attributes";
@@ -35,6 +36,7 @@ const INITIAL_SORT_BY = ID_DESC_SORT.value;
 
 // Exported for testing
 export const AdminCampaignList = ({ params, mutations, router, data }) => {
+  const { adminPerms } = useContext(AdminPermissionsContext);
   const [state, setState] = useState({
     pageSize: 50,
     page: 0,
@@ -156,7 +158,7 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
   const renderFilters = () => (
     <Paper className={css(styles.settings)} elevation={3}>
       <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-        {params.adminPerms && renderArchiveMultiple()}
+        {adminPerms && renderArchiveMultiple()}
         {renderArchivedAndSortBy()}
       </div>
       {renderSearch()}
@@ -188,7 +190,7 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
             archiveMultipleMenu: !state.archiveMultipleMenu
           });
         }}
-      >
+        size="large">
         <MoreVertIcon />
       </IconButton>
     );
@@ -372,7 +374,7 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
           onNextPageClick={handleNextPageClick}
           onPreviousPageClick={handlePreviousPageClick}
           onRowSizeChange={handleRowSizeChanged}
-          adminPerms={params.adminPerms}
+          adminPerms={adminPerms}
           selectMultiple={state.archiveMultiple}
           organizationId={params.organizationId}
           handleChecked={handleChecked}
@@ -381,7 +383,7 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
         />
       )}
 
-      {params.adminPerms && renderActionButton()}
+      {adminPerms && renderActionButton()}
     </div>
   );
 };

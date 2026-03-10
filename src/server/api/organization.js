@@ -151,7 +151,7 @@ export const resolvers = {
     theme: async organization => {
       const themeOptions = {
         palette: {
-          type: "light",
+          mode: "light",
           primary: {
             main: "#209556"
           },

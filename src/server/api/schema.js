@@ -1,6 +1,12 @@
 import GraphQLDate from "graphql-date";
 import GraphQLJSON from "graphql-type-json";
 import { GraphQLError } from "graphql";
+import { withFilter } from "graphql-subscriptions";
+import {
+  pubsub,
+  CONTACT_STATUS_CHANGED,
+  CAMPAIGN_SCRIPT_UPDATED
+} from "../pubsub";
 import isUrl from "is-url";
 import _ from "lodash";
 import { gzip, makeTree, getHighestRole } from "../../lib";
@@ -1734,6 +1740,25 @@ const rootResolvers = {
   }
 };
 
+const subscriptionResolvers = {
+  Subscription: {
+    contactStatusChanged: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([CONTACT_STATUS_CHANGED]),
+        (payload, variables) =>
+          payload.contactStatusChanged.assignmentId === variables.assignmentId
+      )
+    },
+    campaignScriptUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([CAMPAIGN_SCRIPT_UPDATED]),
+        (payload, variables) =>
+          payload.campaignScriptUpdated.id === variables.campaignId
+      )
+    }
+  }
+};
+
 export const resolvers = {
   ...rootResolvers,
   ...userResolvers,
@@ -1753,5 +1778,6 @@ export const resolvers = {
   ...questionResolvers,
   ...conversationsResolver,
   ...tagResolvers,
-  ...rootMutations
+  ...rootMutations,
+  ...subscriptionResolvers
 };

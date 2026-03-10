@@ -7,13 +7,13 @@ import Empty from "../Empty";
 import { SORTS, TIMEZONE_SORT } from "./SortBy";
 
 import MUIDataTable from "mui-datatables";
-import WarningIcon from "@material-ui/icons/Warning";
-import ArchiveIcon from "@material-ui/icons/Archive";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
-import SpeakerNotesIcon from "@material-ui/icons/SpeakerNotes";
-import IconButton from "@material-ui/core/IconButton";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Link from "@material-ui/core/Link";
+import WarningIcon from "@mui/icons-material/Warning";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Link from "@mui/material/Link";
 
 const inlineStyles = {
   campaignInfo: {
@@ -66,7 +66,7 @@ const CampaignTable = ({
             await unarchiveCampaign(campaign.id);
             setCampaigns(campaigns.filter(e => e.id != campaign.id));
           }}
-        >
+          size="large">
           <UnarchiveIcon />
         </IconButton>
       );
@@ -78,7 +78,7 @@ const CampaignTable = ({
           await archiveCampaign(campaign.id);
           setCampaigns(campaigns.filter(e => e.id != campaign.id));
         }}
-      >
+        size="large">
         <ArchiveIcon />
       </IconButton>
     );
@@ -255,7 +255,7 @@ const CampaignTable = ({
               <IconButton
                 tooltip="Has unassigned contacts"
                 href={`/admin/${campaign.organization.id}/campaigns/${campaign.id}/edit`}
-              >
+                size="large">
                 <WarningIcon color="primary" />
               </IconButton>
             ) : null;

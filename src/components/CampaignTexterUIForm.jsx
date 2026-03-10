@@ -4,11 +4,11 @@ import { StyleSheet, css } from "aphrodite";
 import * as yup from "yup";
 import Form from "react-formal";
 
-import Switch from "@material-ui/core/Switch";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
+import Switch from "@mui/material/Switch";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Collapse from "@mui/material/Collapse";
 
 import GSForm from "../components/forms/GSForm";
 import GSSubmitButton from "../components/forms/GSSubmitButton";

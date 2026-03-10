@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import theme from "../styles/theme";
-import { withRouter } from "react-router";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,13 +32,9 @@ class TexterDashboard extends React.Component {
 }
 
 TexterDashboard.propTypes = {
-  router: PropTypes.object,
-  params: PropTypes.object,
-  children: PropTypes.object,
-  location: PropTypes.object,
   main: PropTypes.element,
   topNav: PropTypes.element,
   fullScreen: PropTypes.object
 };
 
-export default withRouter(TexterDashboard);
+export default TexterDashboard;

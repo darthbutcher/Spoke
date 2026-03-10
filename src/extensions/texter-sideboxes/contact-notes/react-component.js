@@ -4,8 +4,8 @@ import { withRouter } from "react-router";
 import { gql } from "@apollo/client";
 import _ from "lodash";
 
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import loadData from "../../../containers/hoc/load-data";
 

@@ -1,26 +1,27 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { gql } from "@apollo/client";
-import { Link } from "react-router";
+import { Link, withRouter } from "react-router";
+import { withAdminPerms } from "./context/AdminPermissionsContext";
 
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
-import WarningIcon from "@material-ui/icons/Warning";
-import DoneIcon from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
+import WarningIcon from "@mui/icons-material/Warning";
+import DoneIcon from "@mui/icons-material/Done";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { css } from "aphrodite";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import IconButton from "@mui/material/IconButton";
 
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardHeader from "@material-ui/core/CardHeader";
-import Collapse from "@material-ui/core/Collapse";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardHeader from "@mui/material/CardHeader";
+import Collapse from "@mui/material/Collapse";
 
-import Avatar from "@material-ui/core/Avatar";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Avatar from "@mui/material/Avatar";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import theme from "../styles/theme";
 import loadData from "./hoc/load-data";
@@ -835,7 +836,7 @@ export class AdminCampaignEditBase extends React.Component {
   }
 
   renderStartButton() {
-    if (!this.props.params.adminPerms) {
+    if (!this.props.adminPerms) {
       // Supervolunteers don't have access to start the campaign or un/archive it
       return null;
     }
@@ -1018,7 +1019,7 @@ export class AdminCampaignEditBase extends React.Component {
                 title={section.title}
                 action={
                   sectionCanExpandOrCollapse && (
-                    <IconButton>
+                    <IconButton size="large">
                       <ExpandMoreIcon />
                     </IconButton>
                   )
@@ -1228,7 +1229,7 @@ const mutations = {
 export const operations = { queries, mutations };
 
 const EnhancedAdminCampaignEditBase = loadData(operations)(
-  withMuiTheme(AdminCampaignEditBase)
+  withAdminPerms(withRouter(withMuiTheme(AdminCampaignEditBase)))
 );
 
 export default EnhancedAdminCampaignEditBase;

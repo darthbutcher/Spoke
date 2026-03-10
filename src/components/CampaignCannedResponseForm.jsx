@@ -8,12 +8,12 @@ import GSScriptField from "./forms/GSScriptField";
 import GSSelectField from "./forms/GSSelectField";
 import GSAutoComplete from "./forms/GSAutoComplete";
 import Form from "react-formal";
-import IconButton from "@material-ui/core/IconButton";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import Tooltip from "@material-ui/core/Tooltip";
-import Button from "@material-ui/core/Button";
-import AutoComplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
+import IconButton from "@mui/material/IconButton";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import AutoComplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
 import { dataTest } from "../lib/attributes";
 import GSSubmitButton from "./forms/GSSubmitButton";
 
@@ -145,7 +145,7 @@ export default class CannedResponseForm extends React.Component {
                   style={{ flexGrow: 1 }}
                 />
                 <Tooltip title="An action is something that is triggered by this answer being chosen, often in an outside system">
-                  <IconButton>
+                  <IconButton size="large">
                     <HelpOutlineIcon />
                   </IconButton>
                 </Tooltip>

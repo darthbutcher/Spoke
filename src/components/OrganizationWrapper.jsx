@@ -1,12 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router";
+import { Outlet } from "react-router-dom";
 import { gql } from "@apollo/client";
 
 import loadData from "../containers/hoc/load-data";
 import withSetTheme from "../containers/hoc/withSetTheme";
 
-const OrganizationWrapper = ({ children, ...props }) => {
-  return <React.Fragment>{children}</React.Fragment>;
+const OrganizationWrapper = () => {
+  return <Outlet />;
 };
 
 const queries = {

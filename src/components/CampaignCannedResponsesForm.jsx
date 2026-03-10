@@ -5,18 +5,18 @@ import Form from "react-formal";
 import * as yup from "yup";
 import GSSubmitButton from "./forms/GSSubmitButton";
 
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CreateIcon from "@material-ui/icons/Create";
-import PublishIcon from "@material-ui/icons/Publish";
-import ClearIcon from "@material-ui/icons/Clear";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import Button from "@mui/material/Button";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreateIcon from "@mui/icons-material/Create";
+import PublishIcon from "@mui/icons-material/Publish";
+import ClearIcon from "@mui/icons-material/Clear";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 import GSForm from "./forms/GSForm";
 import CampaignFormSectionHeading from "./CampaignFormSectionHeading";
@@ -142,7 +142,7 @@ export class CampaignCannedResponsesForm extends React.Component {
                 <IconButton
                   onClick={() => this.uploadCsvInputRef.current.click()}
                   disabled={this.state.uploadingCsv}
-                >
+                  size="large">
                   <PublishIcon />
                 </IconButton>
               </Tooltip>
@@ -154,7 +154,7 @@ export class CampaignCannedResponsesForm extends React.Component {
                         cannedResponses: []
                       })
                     }
-                  >
+                    size="large">
                     <ClearIcon />
                   </IconButton>
                 </Tooltip>
@@ -288,7 +288,7 @@ export class CampaignCannedResponsesForm extends React.Component {
                 formButtonText: "Edit Response"
               })
             }
-          >
+            size="large">
             <CreateIcon />
           </IconButton>
           <IconButton
@@ -308,7 +308,7 @@ export class CampaignCannedResponsesForm extends React.Component {
                 cannedResponses: newVals
               });
             }}
-          >
+            size="large">
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>

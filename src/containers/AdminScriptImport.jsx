@@ -2,13 +2,13 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import TextField from "@material-ui/core/TextField";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Button from "@material-ui/core/Button";
-import ErrorIcon from "@material-ui/icons/Error";
+import TextField from "@mui/material/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Button from "@mui/material/Button";
+import ErrorIcon from "@mui/icons-material/Error";
 
 import CampaignFormSectionHeading from "../components/CampaignFormSectionHeading";
 

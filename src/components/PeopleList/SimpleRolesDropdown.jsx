@@ -1,8 +1,8 @@
 import React from "react";
 import type from "prop-types";
 
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 import { ROLE_HIERARCHY } from "../../lib";
 

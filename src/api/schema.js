@@ -219,6 +219,29 @@ const rootSchema = gql`
     TIMEZONE
   }
 
+  # ── Real-time subscription types ────────────────────────────────────────
+
+  """Payload emitted when a campaign contact's messageStatus changes."""
+  type ContactStatusChange {
+    assignmentId: String!
+    contactId: String!
+    messageStatus: String!
+  }
+
+  type Subscription {
+    """
+    Subscribe to contact status changes for a given assignment.
+    Replaces the 30-second polling interval on the texter screen.
+    """
+    contactStatusChanged(assignmentId: String!): ContactStatusChange
+
+    """
+    Subscribe to campaign script/canned-response updates for a given campaign.
+    Replaces the 20-second pollInterval on the campaignData query.
+    """
+    campaignScriptUpdated(campaignId: String!): Campaign
+  }
+
   type RootQuery {
     currentUser: User
     organization(id: String!, utc: String): Organization
@@ -419,6 +442,7 @@ const rootSchema = gql`
   schema {
     query: RootQuery
     mutation: RootMutation
+    subscription: Subscription
   }
 `;
 

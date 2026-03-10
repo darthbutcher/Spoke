@@ -5,9 +5,9 @@ import loadData from "./hoc/load-data";
 import { gql } from "@apollo/client";
 import LoadingIndicator from "../components/LoadingIndicator";
 
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import PeopleIcon from "@material-ui/icons/People";
-import Button from "@material-ui/core/Button";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import PeopleIcon from "@mui/icons-material/People";
+import Button from "@mui/material/Button";
 
 import MUIDataTable from "mui-datatables";
 

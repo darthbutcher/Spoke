@@ -1,8 +1,8 @@
 import React from "react";
-import Chip from "@material-ui/core/Chip";
+import Chip from "@mui/material/Chip";
 import type from "prop-types";
-import Avatar from "@material-ui/core/Avatar";
-import FlagIcon from "@material-ui/icons/Flag";
+import Avatar from "@mui/material/Avatar";
+import FlagIcon from "@mui/icons-material/Flag";
 import withMuiTheme from "../containers/hoc/withMuiTheme";
 
 export const TagChip = props => {

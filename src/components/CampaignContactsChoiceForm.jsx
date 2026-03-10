@@ -4,14 +4,14 @@ import withMuiTheme from "./../containers/hoc/withMuiTheme";
 import GSForm from "../components/forms/GSForm";
 import CampaignFormSectionHeading from "./CampaignFormSectionHeading";
 
-import CheckIcon from "@material-ui/icons/Check";
-import WarningIcon from "@material-ui/icons/Warning";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
-import Alert from "@material-ui/lab/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+import Alert from '@mui/material/Alert';
 
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 import components from "../extensions/contact-loaders/components";
 import * as yup from "yup";

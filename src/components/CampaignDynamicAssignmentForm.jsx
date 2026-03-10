@@ -13,8 +13,8 @@ import cloneDeep from "lodash/cloneDeep";
 import TagChips from "./TagChips";
 import withMuiTheme from "../containers/hoc/withMuiTheme";
 
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 class CampaignDynamicAssignmentForm extends React.Component {
   constructor(props) {

@@ -1,13 +1,13 @@
 import React from "react";
 import type from "prop-types";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Divider from "@material-ui/core/Divider";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Divider from "@mui/material/Divider";
+import ListSubheader from "@mui/material/ListSubheader";
+import InputLabel from "@mui/material/InputLabel";
+import Input from "@mui/material/Input";
 
 const NO_TAG = { id: -1, name: "NO TAG" };
 const ANY_TAG = { id: -2, name: "ANY TAG" };

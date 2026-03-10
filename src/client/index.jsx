@@ -1,6 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { Router, browserHistory } from "react-router";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import { StyleSheet } from "aphrodite";
 import errorCatcher from "./error-catcher";
 import makeRoutes from "../routes";
@@ -21,9 +21,9 @@ window.AuthService = {
 
 StyleSheet.rehydrate(window.RENDERED_CLASS_NAMES);
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("mount"));
+root.render(
   <ApolloProvider client={ApolloClientSingleton}>
-    <Router history={browserHistory} routes={makeRoutes()} />
-  </ApolloProvider>,
-  document.getElementById("mount")
+    <BrowserRouter>{makeRoutes()}</BrowserRouter>
+  </ApolloProvider>
 );

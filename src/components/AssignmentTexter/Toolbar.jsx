@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import HomeIcon from "@material-ui/icons/Home";
-import BuildIcon from "@material-ui/icons/Build";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import HomeIcon from "@mui/icons-material/Home";
+import BuildIcon from "@mui/icons-material/Build";
 
 const inlineStyles = {
   toolbar: {
@@ -106,7 +106,7 @@ const CampaignToolbar = props => (
       <IconButton
         onClick={props.onExit}
         className={css(styles.contactToolbarIconButton)}
-      >
+        size="large">
         <HomeIcon style={{ width: 42 }} htmlColor="white" />
       </IconButton>
     </Tooltip>
@@ -131,7 +131,7 @@ const CampaignToolbar = props => (
               onClick={props.onSideboxButtonClick}
               className={css(styles.contactToolbarIconButton)}
               style={{ flex: "0 0 56px", width: "45px" }}
-            >
+              size="large">
               <BuildIcon htmlColor="white" />
             </IconButton>
           </Tooltip>

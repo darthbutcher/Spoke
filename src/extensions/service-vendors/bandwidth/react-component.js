@@ -5,22 +5,22 @@ import React from "react";
 import Form from "react-formal";
 import * as yup from "yup";
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableRow from "@material-ui/core/TableRow";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
 
 import theme from "../../../styles/theme";
 import GSForm from "../../../components/forms/GSForm";
@@ -258,7 +258,7 @@ export class OrgConfigBase extends React.Component {
                         backgroundColor: this.props.muiTheme.palette.grey[300]
                       }}
                       action={
-                        <IconButton>
+                        <IconButton size="large">
                           <ExpandMoreIcon />
                         </IconButton>
                       }
@@ -317,7 +317,7 @@ export class OrgConfigBase extends React.Component {
                       backgroundColor: this.props.muiTheme.palette.grey[300]
                     }}
                     action={
-                      <IconButton>
+                      <IconButton size="large">
                         <ExpandMoreIcon />
                       </IconButton>
                     }

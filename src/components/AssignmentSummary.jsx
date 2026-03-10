@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import Button from "@material-ui/core/Button";
-import Badge from "@material-ui/core/Badge";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
+import Button from "@mui/material/Button";
+import Badge from "@mui/material/Badge";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
 
 import { withRouter } from "react-router";
 import withMuiTheme from "../containers/hoc/withMuiTheme";
@@ -19,7 +19,7 @@ import theme from "../styles/mui-theme";
 
 const styles = StyleSheet.create({
   container: {
-    margin: `${theme.spacing(2)}px 0`
+    margin: `${theme.spacing(2)} 0`
   },
   image: {
     height: 100

@@ -3,10 +3,10 @@ import React from "react";
 import Form from "react-formal";
 import * as yup from "yup";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 import withMuiTheme from "../../../containers/hoc/withMuiTheme";
 import GSForm from "../../../components/forms/GSForm";

@@ -7,13 +7,13 @@ import Form from "react-formal";
 import { gql } from "@apollo/client";
 import _ from "lodash";
 
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import GSForm from "../../../components/forms/GSForm";
 import GSTextField from "../../../components/forms/GSTextField";
@@ -196,7 +196,7 @@ export class TexterSideboxClassBase extends React.Component {
             onClick={() =>
               this.handleCounterChange(type, countKey, "decrement")
             }
-          >
+            size="large">
             <RemoveIcon />
           </IconButton>
           {feedback[type][countKey] || "0"}
@@ -204,7 +204,7 @@ export class TexterSideboxClassBase extends React.Component {
             onClick={() =>
               this.handleCounterChange(type, countKey, "increment")
             }
-          >
+            size="large">
             <AddIcon />
           </IconButton>
         </div>

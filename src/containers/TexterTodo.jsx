@@ -175,7 +175,7 @@ export const dataQuery = gql`
 `;
 
 export class TexterTodo extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { assignment } = this.props.campaignData;
     if (
       !assignment ||
@@ -186,17 +186,9 @@ export class TexterTodo extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // Get the latest data for the sidebar every 30 seconds to catch new messages
-    if (global.ASSIGNMENT_CONTACTS_SIDEBAR && !this.refreshInterval) {
-      this.refreshInterval = setInterval(this.refreshData, 30000);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval);
-    }
+    // No manual polling interval — contact updates arrive via the
+    // contactStatusChanged subscription wired in the `subscriptions` config.
   }
 
   loadContacts = async contactIds => {
@@ -327,8 +319,9 @@ const queries = {
         }),
         tagGroup: "texter-tags"
       },
-      fetchPolicy: "network-only",
-      pollInterval: 20000
+      // fetchPolicy: "network-only" — campaign data is refreshed via the
+      // campaignScriptUpdated subscription rather than polling.
+      fetchPolicy: "cache-and-network"
     })
   }
 };
@@ -352,7 +345,53 @@ const mutations = {
   })
 };
 
+const subscriptions = {
+  contactStatusSubscription: {
+    subscription: gql`
+      subscription onContactStatusChanged($assignmentId: String!) {
+        contactStatusChanged(assignmentId: $assignmentId) {
+          assignmentId
+          contactId
+          messageStatus
+        }
+      }
+    `,
+    options: ownProps => ({
+      variables: {
+        assignmentId: ownProps.params.assignmentId
+      },
+      skip: !ownProps.params.assignmentId
+    }),
+    // When a contact status changes, refetch the contacts sidebar so the
+    // texter screen stays fresh without a manual page reload.
+    refetchQueries: ["contactData"]
+  },
+  campaignScriptSubscription: {
+    subscription: gql`
+      subscription onCampaignScriptUpdated($campaignId: String!) {
+        campaignScriptUpdated(campaignId: $campaignId) {
+          id
+        }
+      }
+    `,
+    options: ownProps => ({
+      variables: {
+        campaignId:
+          ownProps.campaignData &&
+          ownProps.campaignData.assignment &&
+          ownProps.campaignData.assignment.campaign.id
+      },
+      skip:
+        !ownProps.campaignData ||
+        !ownProps.campaignData.assignment ||
+        !ownProps.campaignData.assignment.campaign.id
+    }),
+    // When the script is updated, refetch campaign data (scripts, canned responses).
+    refetchQueries: ["campaignData"]
+  }
+};
+
 // exported for testing
-export const operations = { queries, mutations };
+export const operations = { queries, mutations, subscriptions };
 
 export default loadData(operations)(withRouter(TexterTodo));

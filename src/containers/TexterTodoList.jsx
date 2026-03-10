@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Empty from "../components/Empty";
 import LoadingIndicator from "../components/LoadingIndicator";
 import AssignmentSummary from "../components/AssignmentSummary";
-import Snackbar from "@material-ui/core/Snackbar";
+import Snackbar from "@mui/material/Snackbar";
 import loadData from "./hoc/load-data";
 import { gql } from "@apollo/client";
 import { withRouter } from "react-router";
@@ -25,7 +27,7 @@ class TexterTodoList extends React.Component {
     this.state = {};
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     const notifications =
       nextProps.notifications && nextProps.notifications.user.notifications;
     if (notifications && notifications.length) {
@@ -132,17 +134,36 @@ class TexterTodoList extends React.Component {
     );
 
     return (
-      <div>
+      <Container
+        maxWidth="md"
+        sx={{ py: { xs: 2, sm: 4 }, px: { xs: 1, sm: 3 } }}
+      >
         <Snackbar
           open={Boolean(this.state.notifications)}
           message={"Some campaigns have replies for you to respond to!"}
           autoHideDuration={4000}
-	        onClose={() => {
+          onClose={() => {
             this.setState({ notifications: false });
           }}
         />
-        {renderedTodos.length === 0 ? empty : renderedTodos}
-      </div>
+        {renderedTodos.length === 0 ? (
+          empty
+        ) : (
+          <Box
+            sx={{
+              display: "grid",
+              gap: { xs: 2, sm: 3 },
+              // Single column on phones, two columns on tablet+
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(auto-fill, minmax(300px, 1fr))"
+              }
+            }}
+          >
+            {renderedTodos}
+          </Box>
+        )}
+      </Container>
     );
   }
 }

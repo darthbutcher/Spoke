@@ -1,6 +1,6 @@
 import React from "react";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
 
 import GSFormField from "./GSFormField";
 import theme from "../../styles/mui-theme";
@@ -34,7 +34,7 @@ export default class GSAutoComplete extends GSFormField {
         getOptionLabel={getOptionLabel || (option => option.label || "")}
         value={value}
         options={options}
-        getOptionSelected={getOptionSelected || (opt => opt.value || "")}
+        isOptionEqualToValue={getOptionSelected || (opt => opt.value || "")}
         renderInput={params => {
           return (
             <TextField

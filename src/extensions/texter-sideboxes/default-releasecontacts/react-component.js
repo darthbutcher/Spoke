@@ -4,9 +4,9 @@ import * as yup from "yup";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "react-router";
 import Form from "react-formal";
-import Button from "@material-ui/core/Button";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@mui/material/Button";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { gql } from "@apollo/client";
 import GSTextField from "../../../components/forms/GSTextField";

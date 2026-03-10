@@ -6,8 +6,8 @@ import LoadingIndicator from "../LoadingIndicator";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "react-router";
 import Empty from "../Empty";
-import Button from "@material-ui/core/Button";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import Button from "@mui/material/Button";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   getSideboxes,
   renderSidebox
@@ -51,7 +51,7 @@ export class ContactController extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let startIndex = 0;
     if (this.props.reviewContactId) {
       startIndex = this.props.contacts.findIndex(
@@ -84,7 +84,7 @@ export class ContactController extends React.Component {
     this.updateCurrentContactIndex(startIndex);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     // When we send a message that changes the contact status,
     // then if parent.refreshData is called, then props.contacts
     // will return a new list with the last contact removed and

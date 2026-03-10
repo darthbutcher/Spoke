@@ -70,6 +70,12 @@ const config = {
     ]
   },
   resolve: {
+    alias: {
+      // Redirect the v3 "react-router" specifier to our v6 compat shim so
+      // that the ~48 existing files importing withRouter / Link from
+      // "react-router" continue to work without individual rewrites.
+      "react-router": path.resolve(__dirname, "../src/lib/router-compat.js")
+    },
     fallback: {
       stream: require.resolve( "stream-browserify" ),
       zlib: require.resolve( "browserify-zlib" ),

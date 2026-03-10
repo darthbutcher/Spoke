@@ -4,13 +4,13 @@ import * as yup from "yup";
 import Form from "react-formal";
 import { css, StyleSheet } from "aphrodite";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 import GSTextField from "../../../components/forms/GSTextField";
 import {

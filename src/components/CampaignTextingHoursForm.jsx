@@ -10,10 +10,10 @@ import isEqual from "lodash/isEqual";
 import moment from "moment";
 import momentTz from "moment-timezone";
 
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import AutoComplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import AutoComplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
 
 const formatTextingHours = hour => moment(hour, "H").format("h a");
 

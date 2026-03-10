@@ -5,10 +5,10 @@ import * as yup from "yup";
 import { gql } from "@apollo/client";
 import { StyleSheet, css } from "aphrodite";
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
 
 import loadData from "../../containers/hoc/load-data";
 import GSForm from "../../components/forms/GSForm";

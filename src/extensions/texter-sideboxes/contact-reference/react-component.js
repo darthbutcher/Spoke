@@ -3,12 +3,12 @@ import React from "react";
 import { Link } from "react-router";
 import * as yup from "yup";
 
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import TextField from "@mui/material/TextField";
 
 export const displayName = () => "Contact Conversation URL";
 

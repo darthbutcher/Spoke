@@ -31,10 +31,10 @@ import GSPasswordField from "../components/forms/GSPasswordField";
 import Form from "react-formal";
 import * as yup from "yup";
 
-import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 import { StyleSheet, css } from "aphrodite";
 import apolloClient from "../network/apollo-client-singleton";

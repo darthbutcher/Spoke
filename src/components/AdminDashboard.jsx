@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import { Outlet } from "react-router-dom";
 import theme from "../styles/theme";
 import { hasRole } from "../lib";
 import TopNav from "./TopNav";
@@ -8,6 +9,8 @@ import { gql } from "@apollo/client";
 import { withRouter } from "react-router";
 import loadData from "../containers/hoc/load-data";
 import AdminNavigation from "../containers/AdminNavigation";
+import AdminPermissionsContext from "../containers/context/AdminPermissionsContext";
+
 const styles = StyleSheet.create({
   container: {
     ...theme.layouts.multiColumn.container
@@ -61,12 +64,11 @@ class AdminDashboard extends React.Component {
   }
 
   render() {
-    const { location, children, params } = this.props;
+    const { location, params } = this.props;
     const { roles } = this.props.data.currentUser;
 
-    // HACK: Setting params.adminPerms helps us hide non-supervolunteer functionality
-    params.adminPerms = hasRole("ADMIN", roles || []);
-    params.ownerPerms = hasRole("OWNER", roles || []);
+    const adminPerms = hasRole("ADMIN", roles || []);
+    const ownerPerms = hasRole("OWNER", roles || []);
 
     let sections = [
       {
@@ -123,17 +125,21 @@ class AdminDashboard extends React.Component {
         : null;
 
     return (
-      <div>
-        <TopNav
-          title={title}
-          backToURL={backToURL}
-          orgId={params.organizationId}
-        />
-        <div className={css(styles.container)}>
-          {this.renderNavigation(sections.filter(s => hasRole(s.role, roles)))}
-          <div className={css(styles.content)}>{children}</div>
+      <AdminPermissionsContext.Provider value={{ adminPerms, ownerPerms }}>
+        <div>
+          <TopNav
+            title={title}
+            backToURL={backToURL}
+            orgId={params.organizationId}
+          />
+          <div className={css(styles.container)}>
+            {this.renderNavigation(sections.filter(s => hasRole(s.role, roles)))}
+            <div className={css(styles.content)}>
+              <Outlet />
+            </div>
+          </div>
         </div>
-      </div>
+      </AdminPermissionsContext.Provider>
     );
   }
 }
@@ -141,7 +147,6 @@ class AdminDashboard extends React.Component {
 AdminDashboard.propTypes = {
   router: PropTypes.object,
   params: PropTypes.object,
-  children: PropTypes.object,
   location: PropTypes.object
 };
 

@@ -3,7 +3,7 @@ import React from "react";
 import * as yup from "yup";
 import { css } from "aphrodite";
 import Form from "react-formal";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
 import GSTextField from "../../../components/forms/GSTextField";
 import {

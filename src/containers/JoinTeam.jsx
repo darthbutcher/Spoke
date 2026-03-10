@@ -16,7 +16,7 @@ class JoinTeam extends React.Component {
   state = {
     errors: null
   };
-  async componentWillMount() {
+  async componentDidMount() {
     let organization = null;
     let campaign = null;
     try {

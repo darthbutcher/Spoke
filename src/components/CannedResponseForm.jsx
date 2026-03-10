@@ -6,7 +6,7 @@ import GSForm from "./forms/GSForm";
 import GSTextField from "./forms/GSTextField";
 import GSScriptField from "./forms/GSScriptField";
 import GSSubmitButton from "./forms/GSSubmitButton";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
 class CannedResponseForm extends React.Component {
   handleSave = formValues => {

@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import Chart from "../components/Chart";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import Collapse from "@material-ui/core/Collapse";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import Collapse from "@mui/material/Collapse";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import IconButton from "@mui/material/IconButton";
 
 import withMuiTheme from "../containers/hoc/withMuiTheme";
 import theme from "../styles/theme";
@@ -40,7 +40,7 @@ export class CollapsibleCard extends React.Component {
           title={title} 
           style={cardHeaderStyle}
           action={(
-            <IconButton>
+            <IconButton size="large">
               <ExpandMoreIcon />
             </IconButton>
           )}

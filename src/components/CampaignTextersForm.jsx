@@ -3,16 +3,16 @@ import React from "react";
 import orderBy from "lodash/orderBy";
 import Slider from "./Slider";
 
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CloseIcon from "@material-ui/icons/Close";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
 
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import withMuiTheme from "./../containers/hoc/withMuiTheme";
 import GSForm from "../components/forms/GSForm";
@@ -188,7 +188,7 @@ class TexterInputs extends GSFormField {
           </div>
         ) : null}
         <div className={css(styles.removeButton)}>
-          <IconButton onClick={() => onRemove(id)}>
+          <IconButton onClick={() => onRemove(id)} size="large">
             <DeleteIcon />
           </IconButton>
         </div>

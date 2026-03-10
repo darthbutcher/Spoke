@@ -17,7 +17,7 @@ class AssignReplies extends React.Component {
     errors: null
   };
 
-  async componentWillMount() {
+  async componentDidMount() {
     try {
       
       const organizationId = (await this.props.mutations.dynamicReassign(

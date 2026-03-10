@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import Chip from "@material-ui/core/Chip";
-import CloseIcon from "@material-ui/icons/Close";
+import Chip from "@mui/material/Chip";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ssStyles = StyleSheet.create({
   container: {

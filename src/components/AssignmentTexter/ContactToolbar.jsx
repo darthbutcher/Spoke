@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import momenttz from "moment-timezone";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FaceIcon from "@material-ui/icons/Face";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import FaceIcon from "@mui/icons-material/Face";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { getLocalTime, getContactTimezone } from "../../lib/timezones";
 import { getProcessEnvDstReferenceTimezone } from "../../lib/tz-helpers";
 
@@ -134,7 +134,7 @@ const ContactToolbar = function ContactToolbar(props) {
               ? props.toggleContactList()
               : null;
           }}
-        >
+          size="large">
           <FaceIcon style={{ width: 42 }} htmlColor="white" />
         </IconButton>
       </Tooltip>
@@ -146,7 +146,6 @@ const ContactToolbar = function ContactToolbar(props) {
           {campaignContact.firstName}
         </div>
       </div>
-
       <div className={css(styles.grow)}></div>
       <div className={css(styles.navigation)} style={{ flexBasis: "130px" }}>
         <Tooltip title="Previous Contact">
@@ -161,7 +160,7 @@ const ContactToolbar = function ContactToolbar(props) {
               disabled={!navigationToolbarChildren.onPrevious}
               className={css(styles.contactToolbarIconButton)}
               style={{ flex: "0 0 56px", width: "45px" }}
-            >
+              size="large">
               <ArrowBackIcon htmlColor="white" />
             </IconButton>
           </span>
@@ -181,7 +180,7 @@ const ContactToolbar = function ContactToolbar(props) {
               disabled={!navigationToolbarChildren.onNext}
               className={css(styles.contactToolbarIconButton)}
               style={{ flex: "0 0 56px", width: "45px" }}
-            >
+              size="large">
               <ArrowForwardIcon htmlColor="white" />
             </IconButton>
           </span>
