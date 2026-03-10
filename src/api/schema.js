@@ -415,6 +415,8 @@ const rootSchema = gql`
     releaseCampaignNumbers(campaignId: ID!): Campaign!
     clearCachedOrgAndExtensionCaches(organizationId: String!): String
     deleteOrganization(organizationId: String!): Boolean
+    archiveOrganization(organizationId: String!): Organization
+    unarchiveOrganization(organizationId: String!): Organization
   }
 
   schema {

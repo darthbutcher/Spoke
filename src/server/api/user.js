@@ -366,7 +366,20 @@ export const resolvers = {
         return [];
       }
       // Note: this only returns {id, name}, but that is all apis need here
-      return await cacheableData.user.userOrgs(user.id, role);
+      const orgs = await cacheableData.user.userOrgs(user.id, role);
+      if (!orgs.length) return orgs;
+      const archivedIds = (
+        await r
+          .knex("organization")
+          .whereIn(
+            "id",
+            orgs.map(o => o.id)
+          )
+          .where("is_archived", true)
+          .select("id")
+      ).map(o => o.id.toString());
+      if (!archivedIds.length) return orgs;
+      return orgs.filter(o => !archivedIds.includes(o.id.toString()));
     },
     roles: async (user, { organizationId }) => {
       return user.role

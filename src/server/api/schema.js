@@ -1228,6 +1228,24 @@ const rootMutations = {
 
       return true;
     },
+    archiveOrganization: async (_, { organizationId }, { user }) => {
+      await accessRequired(user, organizationId, "OWNER", /* superadmin */ true);
+      await r
+        .knex("organization")
+        .where("id", organizationId)
+        .update({ is_archived: true });
+      await cacheableData.organization.clear(organizationId);
+      return await Organization.get(organizationId);
+    },
+    unarchiveOrganization: async (_, { organizationId }, { user }) => {
+      await accessRequired(user, organizationId, "OWNER", /* superadmin */ true);
+      await r
+        .knex("organization")
+        .where("id", organizationId)
+        .update({ is_archived: false });
+      await cacheableData.organization.clear(organizationId);
+      return await Organization.get(organizationId);
+    },
     resetOrganizationJoinLink: async (_, { organizationId }, { user }) => {
       await accessRequired(user, organizationId, "ADMIN");
       const uuid = uuidv4();

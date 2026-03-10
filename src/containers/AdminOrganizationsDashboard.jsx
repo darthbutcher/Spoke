@@ -9,8 +9,12 @@ import MUIDataTable from "mui-datatables";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ArchiveIcon from "@material-ui/icons/Archive";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import Link from "@material-ui/core/Link";
+import Chip from "@material-ui/core/Chip";
 
 import { StyleSheet, css } from "aphrodite";
 import theme from "../styles/theme";
@@ -36,6 +40,34 @@ class AdminOrganizationsDashboard extends React.Component {
         query: { nextUrl }
       }
     } = this.props;
+  };
+
+  handleToggleArchive = async orgId => {
+    const orgData = this.props.data.organizations.find(
+      o => o.id.toString() === orgId.toString()
+    );
+    if (!orgData) return;
+    const action = orgData.is_archived ? "unarchive" : "archive";
+    if (
+      !window.confirm(
+        `Are you sure you want to ${action} organization "${orgData.name}"?`
+      )
+    ) {
+      return;
+    }
+    try {
+      const mutation = orgData.is_archived
+        ? this.props.mutations.unarchiveOrganization
+        : this.props.mutations.archiveOrganization;
+      const result = await mutation(orgId);
+      if (result.errors) {
+        alert(`Error: ${result.errors[0].message}`);
+      } else {
+        this.props.data.refetch();
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
   };
 
   handleDeleteOrg = async orgId => {
@@ -121,10 +153,11 @@ class AdminOrganizationsDashboard extends React.Component {
         label: "Name",
         sortable: true,
         options: {
-          customBodyRender: (value, tableMeta, updateValue) => {
+          customBodyRender: (value, tableMeta) => {
             const orgId = tableMeta.rowData[0];
+            const isArchived = tableMeta.rowData[3];
             return (
-              <div style={{ margin: "6px 0" }}>
+              <div style={{ margin: "6px 0", display: "flex", alignItems: "center", gap: 8 }}>
                 <Link
                   component={RouterLink}
                   target="_blank"
@@ -132,22 +165,12 @@ class AdminOrganizationsDashboard extends React.Component {
                 >
                   {value}
                 </Link>
+                {isArchived && (
+                  <Chip label="Archived" size="small" color="default" />
+                )}
               </div>
             );
           }
-        },
-        render: (columnKey, organizations) => {
-          return (
-            <div style={{ margin: "6px 0" }}>
-              <Link
-                component={RouterLink}
-                target="_blank"
-                to={`/admin/${organizations.id}/campaigns`}
-              >
-                {columnKey}
-              </Link>
-            </div>
-          );
         }
       },
       // note that 'active' is defined as 'not archived'.
@@ -163,6 +186,14 @@ class AdminOrganizationsDashboard extends React.Component {
         }
       },
       {
+        key: "is_archived",
+        name: "is_archived",
+        label: "Archived",
+        options: {
+          display: "excluded"
+        }
+      },
+      {
         key: "actions",
         name: "actions",
         label: "Actions",
@@ -171,14 +202,26 @@ class AdminOrganizationsDashboard extends React.Component {
           sort: false,
           customBodyRender: (value, tableMeta) => {
             const orgId = tableMeta.rowData[0];
+            const isArchived = tableMeta.rowData[3];
             return (
-              <IconButton
-                onClick={() => this.handleDeleteOrg(orgId)}
-                size="small"
-                title="Delete organization"
-              >
-                <DeleteIcon color="error" />
-              </IconButton>
+              <div style={{ display: "flex", gap: 4 }}>
+                <Tooltip title={isArchived ? "Unarchive organization" : "Archive organization"}>
+                  <IconButton
+                    onClick={() => this.handleToggleArchive(orgId)}
+                    size="small"
+                  >
+                    {isArchived ? <UnarchiveIcon color="primary" /> : <ArchiveIcon />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete organization">
+                  <IconButton
+                    onClick={() => this.handleDeleteOrg(orgId)}
+                    size="small"
+                  >
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </Tooltip>
+              </div>
             );
           }
         }
@@ -240,6 +283,28 @@ const mutations = {
       }
     `,
     variables: { organizationId }
+  }),
+  archiveOrganization: ownProps => organizationId => ({
+    mutation: gql`
+      mutation archiveOrganization($organizationId: String!) {
+        archiveOrganization(organizationId: $organizationId) {
+          id
+          is_archived
+        }
+      }
+    `,
+    variables: { organizationId }
+  }),
+  unarchiveOrganization: ownProps => organizationId => ({
+    mutation: gql`
+      mutation unarchiveOrganization($organizationId: String!) {
+        unarchiveOrganization(organizationId: $organizationId) {
+          id
+          is_archived
+        }
+      }
+    `,
+    variables: { organizationId }
   })
 };
 
@@ -259,6 +324,7 @@ const queries = {
           id
           name
           campaignsCount
+          is_archived
           theme
         }
       }

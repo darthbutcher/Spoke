@@ -59,7 +59,7 @@ export const getSideboxChoices = organization => {
 
 export const resolvers = {
   Organization: {
-    ...mapFieldsToModel(["id", "name"], Organization),
+    ...mapFieldsToModel(["id", "name", "is_archived"], Organization),
     campaigns: async (
       organization,
       { cursor, campaignsFilter, sortBy },

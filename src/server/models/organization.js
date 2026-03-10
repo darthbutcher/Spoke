@@ -32,7 +32,11 @@ const Organization = thinky.createModel(
         .required()
         .min(0)
         .max(24)
-        .default(21)
+        .default(21),
+      is_archived: type
+        .boolean()
+        .required()
+        .default(false)
     })
     .allowExtra(false),
   { noAutoCreation: true }
