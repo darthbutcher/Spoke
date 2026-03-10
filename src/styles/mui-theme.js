@@ -1,4 +1,4 @@
-import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 /**
  * Default application theme.
@@ -57,7 +57,7 @@ const defaultTheme = {
   }
 };
 
-let theme = createTheme(adaptV4Theme(defaultTheme));
+let theme = createTheme(defaultTheme);
 
 export { defaultTheme };
 

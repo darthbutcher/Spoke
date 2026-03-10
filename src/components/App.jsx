@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { ThemeProvider, StyledEngineProvider, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
@@ -22,10 +22,10 @@ const formatTheme = newTheme => {
 
 const App = () => {
   const [theme, setTheme] = useState(defaultTheme);
-  let muiTheme = createTheme(adaptV4Theme(defaultTheme));
+  let muiTheme = createTheme(defaultTheme);
   try {
     // if a bad value is saved this will fail.
-    muiTheme = createTheme(adaptV4Theme(theme));
+    muiTheme = createTheme(theme);
   } catch (e) {
     console.error("failed to create theme", theme);
   }

@@ -297,7 +297,7 @@ export class UserEditBase extends React.Component {
     }
     const org = this.state.currentOrg && this.state.currentOrg.organization;
     const formSchema = this.buildFormSchema(authType, org);
-    const fieldsNeeded = router && !!router.location.query.fieldsNeeded;
+    const fieldsNeeded = !!(this.props.location && this.props.location.query && this.props.location.query.fieldsNeeded);
 
     return (
       <div style={{ padding: 20 }}>
