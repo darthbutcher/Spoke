@@ -74,7 +74,16 @@ const config = {
       // Redirect the v3 "react-router" specifier to our v6 compat shim so
       // that the ~48 existing files importing withRouter / Link from
       // "react-router" continue to work without individual rewrites.
-      "react-router": path.resolve(__dirname, "../src/lib/router-compat.js")
+      "react-router": path.resolve(__dirname, "../src/lib/router-compat.js"),
+
+      // Redirect legacy @material-ui/* imports (used by third-party packages
+      // such as mui-datatables and material-ui-search-bar) to the MUI v7
+      // equivalents. Webpack treats these as prefix aliases, so sub-path
+      // imports like @material-ui/core/Button resolve to @mui/material/Button.
+      "@material-ui/core": path.resolve(__dirname, "../node_modules/@mui/material"),
+      "@material-ui/icons": path.resolve(__dirname, "../node_modules/@mui/icons-material"),
+      "@material-ui/lab": path.resolve(__dirname, "../node_modules/@mui/lab"),
+      "@material-ui/pickers": path.resolve(__dirname, "../node_modules/@mui/x-date-pickers")
     },
     fallback: {
       stream: require.resolve( "stream-browserify" ),
