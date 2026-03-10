@@ -8,6 +8,8 @@ import { withRouter, Link as RouterLink } from "react-router";
 import MUIDataTable from "mui-datatables";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton";
 import Link from "@material-ui/core/Link";
 
 import { StyleSheet, css } from "aphrodite";
@@ -34,6 +36,37 @@ class AdminOrganizationsDashboard extends React.Component {
         query: { nextUrl }
       }
     } = this.props;
+  };
+
+  handleDeleteOrg = async orgId => {
+    const orgData = this.props.data.organizations.find(
+      o => o.id.toString() === orgId.toString()
+    );
+    const orgName = orgData ? orgData.name : `ID ${orgId}`;
+    if (
+      !window.confirm(
+        `Are you sure you want to delete organization "${orgName}" and ALL of its data? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    if (
+      !window.confirm(
+        `FINAL WARNING: This will permanently delete all campaigns, contacts, messages, and assignments for "${orgName}". Type OK to confirm.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const result = await this.props.mutations.deleteOrganization(orgId);
+      if (result.errors) {
+        alert("Error deleting organization: " + result.errors[0].message);
+      } else {
+        this.props.data.refetch();
+      }
+    } catch (err) {
+      alert("Error deleting organization: " + err.message);
+    }
   };
 
   handleCreateOrgClick = async e => {
@@ -128,6 +161,27 @@ class AdminOrganizationsDashboard extends React.Component {
         style: {
           width: "5em"
         }
+      },
+      {
+        key: "actions",
+        name: "actions",
+        label: "Actions",
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: (value, tableMeta) => {
+            const orgId = tableMeta.rowData[0];
+            return (
+              <IconButton
+                onClick={() => this.handleDeleteOrg(orgId)}
+                size="small"
+                title="Delete organization"
+              >
+                <DeleteIcon color="error" />
+              </IconButton>
+            );
+          }
+        }
       }
     ];
 
@@ -178,6 +232,14 @@ const mutations = {
       }
     `,
     variables: { invite }
+  }),
+  deleteOrganization: ownProps => organizationId => ({
+    mutation: gql`
+      mutation deleteOrganization($organizationId: String!) {
+        deleteOrganization(organizationId: $organizationId)
+      }
+    `,
+    variables: { organizationId }
   })
 };
 

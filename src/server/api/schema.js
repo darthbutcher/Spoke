@@ -1153,6 +1153,81 @@ const rootMutations = {
       newOrganization.id = newOrganization.id.toString();
       return newOrganization;
     },
+    deleteOrganization: async (_, { organizationId }, { user }) => {
+      await accessRequired(user, organizationId, "OWNER", /* superadmin */ true);
+
+      const campaignIds = (
+        await r
+          .knex("campaign")
+          .where("organization_id", organizationId)
+          .select("id")
+      ).map(c => c.id);
+
+      if (campaignIds.length > 0) {
+        const contactIds = (
+          await r
+            .knex("campaign_contact")
+            .whereIn("campaign_id", campaignIds)
+            .select("id")
+        ).map(cc => cc.id);
+
+        if (contactIds.length > 0) {
+          // Delete in batches to avoid overly large IN clauses
+          const batchSize = 10000;
+          for (let i = 0; i < contactIds.length; i += batchSize) {
+            const batch = contactIds.slice(i, i + batchSize);
+            await r.knex("tag_campaign_contact").whereIn("campaign_contact_id", batch).del();
+            await r.knex("question_response").whereIn("campaign_contact_id", batch).del();
+            await r.knex("message").whereIn("campaign_contact_id", batch).del();
+          }
+          await r.knex("campaign_contact").whereIn("campaign_id", campaignIds).del();
+        }
+
+        const assignmentIds = (
+          await r
+            .knex("assignment")
+            .whereIn("campaign_id", campaignIds)
+            .select("id")
+        ).map(a => a.id);
+
+        if (assignmentIds.length > 0) {
+          await r.knex("assignment_feedback").whereIn("assignment_id", assignmentIds).del();
+        }
+
+        await r.knex("assignment").whereIn("campaign_id", campaignIds).del();
+
+        const cannedResponseIds = (
+          await r
+            .knex("canned_response")
+            .whereIn("campaign_id", campaignIds)
+            .select("id")
+        ).map(cr => cr.id);
+
+        if (cannedResponseIds.length > 0) {
+          await r.knex("tag_canned_response").whereIn("canned_response_id", cannedResponseIds).del();
+        }
+
+        await r.knex("canned_response").whereIn("campaign_id", campaignIds).del();
+        await r.knex("interaction_step").whereIn("campaign_id", campaignIds).del();
+        await r.knex("campaign_admin").whereIn("campaign_id", campaignIds).del();
+        await r.knex("job_request").whereIn("campaign_id", campaignIds).del();
+        await r.knex("campaign").where("organization_id", organizationId).del();
+      }
+
+      // Delete org-level data
+      await r.knex("tag").where("organization_id", organizationId).del();
+      await r.knex("opt_out").where("organization_id", organizationId).del();
+      await r.knex("organization_contact").where("organization_id", organizationId).del();
+      await r.knex("owned_phone_number").where("organization_id", organizationId).del();
+      await r.knex("user_organization").where("organization_id", organizationId).del();
+      await r.knex("job_request").where("organization_id", organizationId).del();
+
+      // Delete the organization itself
+      await r.knex("organization").where("id", organizationId).del();
+      await cacheableData.organization.clear(organizationId);
+
+      return true;
+    },
     resetOrganizationJoinLink: async (_, { organizationId }, { user }) => {
       await accessRequired(user, organizationId, "ADMIN");
       const uuid = uuidv4();

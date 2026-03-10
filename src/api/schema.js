@@ -414,6 +414,7 @@ const rootSchema = gql`
     deletePhoneNumbers(organizationId: ID!, areaCode: String!): JobRequest
     releaseCampaignNumbers(campaignId: ID!): Campaign!
     clearCachedOrgAndExtensionCaches(organizationId: String!): String
+    deleteOrganization(organizationId: String!): Boolean
   }
 
   schema {
