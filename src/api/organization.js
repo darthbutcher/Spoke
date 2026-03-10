@@ -82,5 +82,6 @@ export const schema = gql`
     campaignPhoneNumbersEnabled: Boolean!
     pendingPhoneNumberJobs: [BuyPhoneNumbersJobRequest]
     phoneNumberCounts: [PhoneNumberCounts]
+    is_archived: Boolean
   }
 `;
