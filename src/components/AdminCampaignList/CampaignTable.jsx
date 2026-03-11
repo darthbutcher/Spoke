@@ -10,9 +10,16 @@ import MUIDataTable from "mui-datatables";
 import WarningIcon from "@material-ui/icons/Warning";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import UnarchiveIcon from "@material-ui/icons/Unarchive";
+import DeleteIcon from "@material-ui/icons/Delete";
 import SpeakerNotesIcon from "@material-ui/icons/SpeakerNotes";
 import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Link from "@material-ui/core/Link";
 
 const inlineStyles = {
@@ -34,13 +41,21 @@ const CampaignTable = ({
   organizationId,
   handleChecked,
   archiveCampaign,
-  unarchiveCampaign
+  unarchiveCampaign,
+  deleteCampaign
  }) => {
 
   const [campaigns, setCampaigns] = useState(data.organization.campaigns.campaigns.map((campaign) => ({...campaign})));
 
   const [state, setState] = useState({
     dataTableKey: "initial"
+  });
+
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    open: false,
+    step: 1,
+    campaign: null,
+    deleting: false
   });
 
   const { limit, offset, total } = data.organization.campaigns.pageInfo;
@@ -83,6 +98,44 @@ const CampaignTable = ({
       </IconButton>
     );
   }
+
+  const handleDeleteClick = campaign => {
+    setDeleteConfirm({
+      open: true,
+      step: 1,
+      campaign,
+      deleting: false
+    });
+  };
+
+  const handleDeleteConfirmStep2 = () => {
+    setDeleteConfirm(prev => ({ ...prev, step: 2 }));
+  };
+
+  const handleDeleteConfirmed = async () => {
+    setDeleteConfirm(prev => ({ ...prev, deleting: true }));
+    await deleteCampaign(deleteConfirm.campaign.id);
+    setCampaigns(campaigns.filter(c => c.id !== deleteConfirm.campaign.id));
+    setDeleteConfirm({ open: false, step: 1, campaign: null, deleting: false });
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm({ open: false, step: 1, campaign: null, deleting: false });
+  };
+
+  const renderDeleteIcon = campaign => {
+    if (!campaign.isArchived) {
+      return null;
+    }
+    return (
+      <IconButton
+        tooltip="Delete Campaign"
+        onClick={() => handleDeleteClick(campaign)}
+      >
+        <DeleteIcon color="error" />
+      </IconButton>
+    );
+  };
 
   const sortFunc = key => {
     const sorts = {
@@ -130,6 +183,20 @@ const CampaignTable = ({
           customBodyRender: (value, tableMeta) => {
             const campaign = campaigns.find(c => c.id === tableMeta.rowData[0]);
             return renderArchiveIcon(campaign);
+          },
+          sort: false
+        },
+        style: {
+          width: "5em"
+        }
+      });
+      extraRows.push({
+        label: "Delete",
+        name: "delete",
+        options: {
+          customBodyRender: (value, tableMeta) => {
+            const campaign = campaigns.find(c => c.id === tableMeta.rowData[0]);
+            return renderDeleteIcon(campaign);
           },
           sort: false
         },
@@ -389,6 +456,63 @@ const CampaignTable = ({
       <br />
       <br />
       <br />
+      <Dialog
+        open={deleteConfirm.open}
+        onClose={handleDeleteCancel}
+      >
+        {deleteConfirm.step === 1 ? (
+          <React.Fragment>
+            <DialogTitle>Delete Campaign</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to permanently delete campaign{" "}
+                <strong>
+                  {deleteConfirm.campaign && deleteConfirm.campaign.title}
+                </strong>
+                ? This will remove all associated data including contacts,
+                messages, assignments, and survey responses. This action cannot
+                be undone.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteCancel}>Cancel</Button>
+              <Button
+                onClick={handleDeleteConfirmStep2}
+                color="secondary"
+              >
+                Yes, Delete
+              </Button>
+            </DialogActions>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <DialogTitle>Confirm Permanent Deletion</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                This is your final confirmation. Campaign{" "}
+                <strong>
+                  {deleteConfirm.campaign && deleteConfirm.campaign.title}
+                </strong>{" "}
+                and ALL of its data will be permanently deleted. Are you
+                absolutely sure?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteCancel}>Cancel</Button>
+              <Button
+                onClick={handleDeleteConfirmed}
+                color="secondary"
+                variant="contained"
+                disabled={deleteConfirm.deleting}
+              >
+                {deleteConfirm.deleting
+                  ? "Deleting..."
+                  : "Permanently Delete"}
+              </Button>
+            </DialogActions>
+          </React.Fragment>
+        )}
+      </Dialog>
     </div>
   );
 }
@@ -401,6 +525,7 @@ CampaignTable.propTypes = {
   handleChecked: PropTypes.func,
   archiveCampaign: PropTypes.func,
   unarchiveCampaign: PropTypes.func,
+  deleteCampaign: PropTypes.func,
   onNextPageClick: PropTypes.func,
   onPreviousPageClick: PropTypes.func,
   onRowSizeChange: PropTypes.func,

@@ -369,6 +369,7 @@ const rootSchema = gql`
     archiveCampaign(id: String!): Campaign
     archiveCampaigns(ids: [String!]): [Campaign]
     unarchiveCampaign(id: String!): Campaign
+    deleteCampaign(id: String!): Boolean
     sendReply(id: String!, message: String!): CampaignContact
     getAssignmentContacts(
       assignmentId: String
