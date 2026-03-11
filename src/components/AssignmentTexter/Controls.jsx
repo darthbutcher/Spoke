@@ -10,9 +10,6 @@ import GSForm from "../forms/GSForm";
 import GSTextField from "../forms/GSTextField";
 import withMuiTheme from "../../containers/hoc/withMuiTheme";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -66,17 +63,14 @@ export class AssignmentTexterContactControls extends React.Component {
     }
 
     this.state = {
-      contactOptOutMessage: "",
       questionResponses,
       filteredCannedResponses: props.campaign.cannedResponses,
-      optOutMessageText: "",
       responsePopoverOpen: false,
       answerPopoverOpen: false,
       sideboxCloses: {},
       sideboxOpens: {},
       messageText: this.getStartingMessageText(),
       cannedResponseScript: null,
-      optOutDialogOpen: false,
       currentShortcutSpace: 0,
       messageFocus: false,
       availableSteps,
@@ -228,7 +222,6 @@ export class AssignmentTexterContactControls extends React.Component {
 
     if (evt.key === "Escape") {
       this.setState({
-        optOutDialogOpen: false,
         responsePopoverOpen: false,
         answerPopoverOpen: false
       });
@@ -242,12 +235,7 @@ export class AssignmentTexterContactControls extends React.Component {
       evt.ctrlKey
     ) {
       evt.preventDefault();
-      if (this.state.optOutDialogOpen) {
-        const { optOutMessageText } = this.state;
-        this.props.onOptOut({ optOutMessageText });
-      } else {
-        this.handleClickSendMessageButton(true);
-      }
+      this.handleClickSendMessageButton(true);
       return;
     }
 
@@ -279,10 +267,6 @@ export class AssignmentTexterContactControls extends React.Component {
       return;
     }
   };
-
-  optOutSchema = yup.object({
-    optOutMessageText: yup.string()
-  });
 
   messageSchema = yup.object({
     messageText: yup
@@ -346,29 +330,8 @@ export class AssignmentTexterContactControls extends React.Component {
     }
   };
 
-  handleOpenDialog = async () => {
-    // delay to avoid accidental tap pass-through with focusing on
-    // the text field -- this is annoying on mobile where the keyboard
-    // pops up, inadvertantly
-    const optOutMessage = (
-      await this.props.getOptOutMessage(
-        this.props.organizationId,
-        this.props.contact.zip,
-        this.props.campaign.organization.optOutMessage
-      )
-    ).data.getOptOutMessage;
-    this.setState({contactOptOutMessage: optOutMessage, optOutMessageText: optOutMessage});
-    const update = { optOutDialogOpen: true };
-    if (this.refs.answerButtons) {
-      // store this, because on-close, we lose this
-      update.currentShortcutSpace = this.refs.answerButtons.offsetHeight;
-    }
-    const self = this;
-    setTimeout(() => self.setState(update), 200);
-  };
-
-  handleCloseDialog = () => {
-    this.setState({ optOutDialogOpen: false });
+  handleOneClickOptOut = async () => {
+    this.props.onOptOut({ optOutMessageText: "" });
   };
 
   handleQuestionResponseChange = ({
@@ -678,104 +641,6 @@ export class AssignmentTexterContactControls extends React.Component {
     return button;
   }
 
-  renderOptOutDialog() {
-    if (!this.state.optOutDialogOpen) {
-      return null;
-    }
-    return (
-      <Card className={css(flexStyles.sectionOptOutDialog)}>
-        <CardHeader title="Opt out user" />
-        <CardContent className={css(flexStyles.sectionOptOutDialog)}>
-          <GSForm
-            className={css(flexStyles.sectionOptOutDialog)}
-            schema={this.optOutSchema}
-            onChange={({ optOutMessageText }) =>
-              this.setState({ optOutMessageText })
-            }
-            value={{ optOutMessageText: this.state.optOutMessageText }}
-            onSubmit={this.props.onOptOut}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "left"
-              }}
-            >
-              <Button
-                style={{
-                  margin: "9px",
-                  color:
-                    this.state.optOutMessageText ===
-                      this.state.contactOptOutMessage
-                      ? "white"
-                      : "#494949",
-                  backgroundColor:
-                    this.state.optOutMessageText ===
-                      this.state.contactOptOutMessage
-                      ? "#727272"
-                      : "white"
-                }}
-                onClick={() => {
-                  this.setState({
-                    optOutMessageText: this.state.contactOptOutMessage
-                  });
-                }}
-                variant="contained"
-              >
-                Standard Message
-              </Button>
-              <Button
-                style={{
-                  margin: "0 9px 0 9px",
-                  color:
-                    this.state.optOutMessageText === "" ? "white" : "#494949",
-                  backgroundColor:
-                    this.state.optOutMessageText === "" ? "#727272" : "white"
-                }}
-                onClick={() => {
-                  this.setState({ optOutMessageText: "" });
-                }}
-                variant="contained"
-              >
-                No Message
-              </Button>
-            </div>
-            <Form.Field
-              as={GSTextField}
-              name="optOutMessageText"
-              fullWidth
-              multiline
-              rows={2}
-            />
-            <div className={css(flexStyles.subSectionOptOutDialogActions)}>
-              <Button
-                className={css(flexStyles.button)}
-                style={inlineStyles.inlineBlock}
-                onClick={this.handleCloseDialog}
-                variant="outlined"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                style={{
-                  ...inlineStyles.inlineBlock,
-                  borderColor: "#790000",
-                  color: "white",
-                  marginLeft: "9px",
-                  backgroundColor: "#BC0000"
-                }}
-                variant="contained"
-              >
-                &crarr; Opt-Out
-              </Button>
-            </div>
-          </GSForm>
-        </CardContent>
-      </Card>
-    );
-  }
 
   renderMessagingRowMessage(enabledSideboxes) {
     const { cannedResponseScript } = this.state;
@@ -1044,7 +909,7 @@ export class AssignmentTexterContactControls extends React.Component {
 
         <Button
           {...dataTest("optOut")}
-          onClick={this.handleOpenDialog}
+          onClick={this.handleOneClickOptOut}
           style={{
             color: this.props.muiTheme.palette.error.main,
             backgroundColor: this.props.muiTheme.palette.background.default
@@ -1090,10 +955,6 @@ export class AssignmentTexterContactControls extends React.Component {
       questionResponses,
       currentInteractionStep
     } = this.state;
-
-    if (this.state.optOutDialogOpen) {
-      return this.renderOptOutDialog();
-    }
 
     let currentQuestion = null;
     let currentQuestionAnswered = null;
