@@ -5,6 +5,11 @@ import Chart from "../components/Chart";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Snackbar from "@material-ui/core/Snackbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -101,7 +106,10 @@ class AdminCampaignStats extends React.Component {
     copyCampaignId: null, // This is the ID of the most-recently created copy of the campaign.
     copyMessageOpen: false, // This is true when the copy snackbar should be shown.
     exportMessageOpen: false,
-    disableExportButton: false
+    disableExportButton: false,
+    deleteConfirmOpen: false,
+    deleteConfirmStep: 1,
+    deleting: false
   };
 
   renderPieChart(id, text, count, options) {
@@ -398,6 +406,21 @@ class AdminCampaignStats extends React.Component {
                           Archive
                         </Button>
                       ),
+                      // delete
+                      campaign.isArchived && (
+                        <Button
+                          key="deleteCampaign"
+                          color="secondary"
+                          onClick={() =>
+                            this.setState({
+                              deleteConfirmOpen: true,
+                              deleteConfirmStep: 1
+                            })
+                          }
+                        >
+                          Delete
+                        </Button>
+                      ),
                       // copy
                       <AdminCampaignCopy
                         key="AdminCampaignCopy"
@@ -557,6 +580,86 @@ class AdminCampaignStats extends React.Component {
             this.setState({ exportMessageOpen: false });
           }}
         />
+        <Dialog
+          open={this.state.deleteConfirmOpen}
+          onClose={() =>
+            this.setState({ deleteConfirmOpen: false, deleteConfirmStep: 1 })
+          }
+        >
+          {this.state.deleteConfirmStep === 1 ? (
+            <React.Fragment>
+              <DialogTitle>Delete Campaign</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to permanently delete campaign{" "}
+                  <strong>{campaign.title}</strong>? This will remove all
+                  associated data including contacts, messages, assignments, and
+                  survey responses. This action cannot be undone.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() =>
+                    this.setState({
+                      deleteConfirmOpen: false,
+                      deleteConfirmStep: 1
+                    })
+                  }
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="secondary"
+                  onClick={() => this.setState({ deleteConfirmStep: 2 })}
+                >
+                  Yes, Delete
+                </Button>
+              </DialogActions>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <DialogTitle>Confirm Permanent Deletion</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  This is your final confirmation. Campaign{" "}
+                  <strong>{campaign.title}</strong> and ALL of its data will be
+                  permanently deleted. Are you absolutely sure?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() =>
+                    this.setState({
+                      deleteConfirmOpen: false,
+                      deleteConfirmStep: 1
+                    })
+                  }
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  disabled={this.state.deleting}
+                  onClick={async () => {
+                    this.setState({ deleting: true });
+                    await this.props.mutations.deleteCampaign(campaignId);
+                    this.setState({
+                      deleteConfirmOpen: false,
+                      deleteConfirmStep: 1,
+                      deleting: false
+                    });
+                    this.props.router.push(
+                      `/admin/${organizationId}/campaigns`
+                    );
+                  }}
+                >
+                  {this.state.deleting ? "Deleting..." : "Permanently Delete"}
+                </Button>
+              </DialogActions>
+            </React.Fragment>
+          )}
+        </Dialog>
       </div>
     );
   }
@@ -702,6 +805,14 @@ const mutations = {
           id
           isArchived
         }
+      }
+    `,
+    variables: { campaignId }
+  }),
+  deleteCampaign: ownProps => campaignId => ({
+    mutation: gql`
+      mutation deleteCampaign($campaignId: String!) {
+        deleteCampaign(id: $campaignId)
       }
     `,
     variables: { campaignId }

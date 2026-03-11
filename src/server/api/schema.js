@@ -1057,6 +1057,69 @@ const rootMutations = {
       loaders.campaign.clearAll();
       return campaigns;
     },
+    deleteCampaign: async (_, { id }, { user }) => {
+      const campaign = await cacheableData.campaign.load(id);
+      await accessRequired(user, campaign.organization_id, "ADMIN");
+
+      const campaignId = id;
+
+      // Get all campaign_contact IDs for this campaign
+      const contactIds = (
+        await r
+          .knex("campaign_contact")
+          .where("campaign_id", campaignId)
+          .select("id")
+      ).map(cc => cc.id);
+
+      if (contactIds.length > 0) {
+        // Delete in batches to avoid overly large IN clauses
+        const batchSize = 10000;
+        for (let i = 0; i < contactIds.length; i += batchSize) {
+          const batch = contactIds.slice(i, i + batchSize);
+          await r.knex("tag_campaign_contact").whereIn("campaign_contact_id", batch).del();
+          await r.knex("question_response").whereIn("campaign_contact_id", batch).del();
+          await r.knex("message").whereIn("campaign_contact_id", batch).del();
+        }
+        await r.knex("campaign_contact").where("campaign_id", campaignId).del();
+      }
+
+      // Delete assignments and their feedback
+      const assignmentIds = (
+        await r
+          .knex("assignment")
+          .where("campaign_id", campaignId)
+          .select("id")
+      ).map(a => a.id);
+
+      if (assignmentIds.length > 0) {
+        await r.knex("assignment_feedback").whereIn("assignment_id", assignmentIds).del();
+      }
+      await r.knex("assignment").where("campaign_id", campaignId).del();
+
+      // Delete canned responses and their tags
+      const cannedResponseIds = (
+        await r
+          .knex("canned_response")
+          .where("campaign_id", campaignId)
+          .select("id")
+      ).map(cr => cr.id);
+
+      if (cannedResponseIds.length > 0) {
+        await r.knex("tag_canned_response").whereIn("canned_response_id", cannedResponseIds).del();
+      }
+      await r.knex("canned_response").where("campaign_id", campaignId).del();
+
+      // Delete remaining campaign-level data
+      await r.knex("interaction_step").where("campaign_id", campaignId).del();
+      await r.knex("campaign_admin").where("campaign_id", campaignId).del();
+      await r.knex("job_request").where("campaign_id", campaignId).del();
+
+      // Delete the campaign itself
+      await r.knex("campaign").where("id", campaignId).del();
+      await cacheableData.campaign.clear(campaignId);
+
+      return true;
+    },
     editCampaign: async (_, { id, campaign }, { user, loaders }) => {
       const origCampaign = await Campaign.get(id);
       if (campaign.organizationId) {

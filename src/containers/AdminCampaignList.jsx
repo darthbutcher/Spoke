@@ -331,6 +331,11 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
     await changeCampaignStatus(campaignId, mutations.unarchiveCampaign);
   };
 
+  const handleDeleteCampaign = async campaignId => {
+    await mutations.deleteCampaign(campaignId);
+    await data.refetch();
+  };
+
   const renderActionButton = () => {
     if (state.archiveMultiple) {
       const keys = state.campaignsToArchive;
@@ -378,6 +383,7 @@ export const AdminCampaignList = ({ params, mutations, router, data }) => {
           handleChecked={handleChecked}
           archiveCampaign={handleArchiveCampaign}
           unarchiveCampaign={handleUnarchiveCampaign}
+          deleteCampaign={handleDeleteCampaign}
         />
       )}
 
@@ -520,6 +526,14 @@ const mutations = {
         }
       }`,
     variables: { campaignId }
+  }),
+  deleteCampaign: ownProps => campaignId => ({
+    mutation: gql`
+      mutation deleteCampaign($campaignId: String!) {
+        deleteCampaign(id: $campaignId)
+      }
+    `,
+    variables: { campaignId }
   })
 };
 
@@ -528,7 +542,8 @@ AdminCampaignList.propTypes = {
   mutations: PropTypes.exact({
     createCampaign: PropTypes.func,
     archiveCampaigns: PropTypes.func,
-    unarchiveCampaign: PropTypes.func
+    unarchiveCampaign: PropTypes.func,
+    deleteCampaign: PropTypes.func
   }),
   data: PropTypes.object,
   router: PropTypes.object
