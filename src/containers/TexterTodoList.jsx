@@ -37,9 +37,10 @@ class TexterTodoList extends React.Component {
       );
       this.props.notifications.stopPolling();
       this.props.notifications.startPolling(notificationPollDelay);
-      // move the result to state
+      // move the result to state and refresh counts
       // FUTURE: maybe append for a set of assignmentIds to display them
       nextState.notifications = notifications;
+      this.props.data.refetch();
     }
   }
 
@@ -274,7 +275,9 @@ const queries = {
           !ownProps.params.organizationId
             ? null
             : ownProps.params.organizationId
-      }
+      },
+      fetchPolicy: "network-only",
+      pollInterval: 10000
     })
   },
   notifications: {
