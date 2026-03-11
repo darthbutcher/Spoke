@@ -14,6 +14,8 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
 import SearchBar from "material-ui-search-bar";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
@@ -588,6 +590,14 @@ export class AssignmentTexterContactControls extends React.Component {
     );
   }
 
+  handleSkipWithReason = async (reason) => {
+    this.setState({ skipMenuAnchorEl: null });
+    await this.props.onEditStatus("closed", true);
+    if (reason) {
+      console.log(`Contact ${this.props.contact.id} skipped: ${reason}`);
+    }
+  };
+
   renderNeedsResponseToggleButton(contact) {
     const { messageStatus } = contact;
     let button = null;
@@ -625,18 +635,43 @@ export class AssignmentTexterContactControls extends React.Component {
         );
       } else {
         button = (
-          <Button
-            onClick={onClick("closed", true)}
-            style={{
-              color: this.props.muiTheme.palette.text.primary,
-              backgroundColor: this.props.muiTheme.palette.background.default
-            }}
-            disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
-            Skip
-          </Button>
+          <React.Fragment>
+            <Button
+              onClick={(event) => {
+                this.setState({ skipMenuAnchorEl: event.currentTarget });
+              }}
+              style={{
+                color: this.props.muiTheme.palette.text.primary,
+                backgroundColor: this.props.muiTheme.palette.background.default
+              }}
+              disabled={!!this.props.contact.optOut}
+              color="default"
+              variant="contained"
+            >
+              Skip <ArrowDropDownIcon style={{ marginLeft: -4, marginRight: -8 }} />
+            </Button>
+            <Menu
+              anchorEl={this.state.skipMenuAnchorEl}
+              open={Boolean(this.state.skipMenuAnchorEl)}
+              onClose={() => this.setState({ skipMenuAnchorEl: null })}
+            >
+              <MenuItem onClick={() => this.handleSkipWithReason(null)}>
+                Skip (no reason)
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Wrong number")}>
+                Wrong number
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Not interested")}>
+                Not interested
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Already contacted")}>
+                Already contacted
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Call back later")}>
+                Call back later
+              </MenuItem>
+            </Menu>
+          </React.Fragment>
         );
       }
     }
@@ -782,6 +817,26 @@ export class AssignmentTexterContactControls extends React.Component {
             maxRows={6}
           />
         </GSForm>
+        {window.MAX_MESSAGE_LENGTH && (
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: "12px",
+              padding: "2px 4px 0",
+              color:
+                (this.state.messageText || "").length >
+                window.MAX_MESSAGE_LENGTH
+                  ? "#d32f2f"
+                  : (this.state.messageText || "").length >
+                    window.MAX_MESSAGE_LENGTH * 0.9
+                  ? "#f57c00"
+                  : "#999"
+            }}
+          >
+            {(this.state.messageText || "").length} /{" "}
+            {window.MAX_MESSAGE_LENGTH}
+          </div>
+        )}
       </div>
     );
   }

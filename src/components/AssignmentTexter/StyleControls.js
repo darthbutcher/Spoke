@@ -242,12 +242,17 @@ export const flexStyles = StyleSheet.create({
     flexDirection: "column",
     flexWrap: "wrap",
     alignContent: "space-between",
+    gap: "4px",
     // to 'win' against absoslute positioned content above it:
     zIndex: "10",
     "@media (hover: hover) and (pointer: fine)": {
       // for touchpads and phones, the edge of the tablet is easier
       // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
+    },
+    "@media(max-width: 450px)": {
+      height: "48px",
+      gap: "8px"
     }
   },
   /// * Section Send Button
@@ -260,10 +265,15 @@ export const flexStyles = StyleSheet.create({
     flexWrap: "wrap",
     alignContent: "space-between",
     padding: "9px 9px 9px 21px",
+    gap: "8px",
     "@media (hover: hover) and (pointer: fine)": {
       // for touchpads and phones, the edge of the tablet is easier
       // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
+    },
+    "@media(max-width: 450px)": {
+      height: "auto",
+      minHeight: "56px"
     }
   },
   subSectionSendButton: {
@@ -271,7 +281,10 @@ export const flexStyles = StyleSheet.create({
     width: "70%",
     height: "100%",
     //borderRadius: "0px",
-    color: "white"
+    color: "white",
+    "@media(max-width: 450px)": {
+      minHeight: "48px"
+    }
   },
   flatButton: {
     height: "40px",
@@ -283,7 +296,8 @@ export const flexStyles = StyleSheet.create({
     maxWidth: "300px",
     "@media(max-width: 450px)": {
       // mobile crunch
-      minWidth: "auto"
+      minWidth: "auto",
+      minHeight: "48px"
     }
   },
   button: {
@@ -291,7 +305,8 @@ export const flexStyles = StyleSheet.create({
     maxWidth: "300px",
     "@media(max-width: 450px)": {
       // mobile crunch
-      minWidth: "auto"
+      minWidth: "auto",
+      minHeight: "48px"
     }
   },
   flatButtonLabelMobile: {

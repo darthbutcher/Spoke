@@ -41,6 +41,15 @@ const defaultStyles = {
   }
 };
 
+function formatTimestamp(createdAt) {
+  const messageTime = moment.utc(createdAt);
+  const hoursAgo = moment().diff(messageTime, "hours");
+  if (hoursAgo < 24) {
+    return messageTime.fromNow();
+  }
+  return messageTime.local().format("MMM D, h:mm A");
+}
+
 function SecondaryText(props) {
   const { message, review, currentUser, organizationId } = props;
 
@@ -53,7 +62,7 @@ function SecondaryText(props) {
   ) {
     return (
       <span style={{ fontSize: "90%", display: "block", paddingTop: "5px" }}>
-        Sent {moment.utc(message.createdAt).fromNow()} by{" "}
+        Sent {formatTimestamp(message.createdAt)} by{" "}
         <RouterLink
           target="_blank"
           to={`/app/${organizationId}/account/${message.userId}`}
@@ -66,7 +75,7 @@ function SecondaryText(props) {
 
   return (
     <span style={{ fontSize: "90%", display: "block", paddingTop: "5px" }}>
-      {moment.utc(message.createdAt).fromNow()}
+      {formatTimestamp(message.createdAt)}
     </span>
   );
 }
