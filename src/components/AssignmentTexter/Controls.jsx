@@ -11,12 +11,19 @@ import GSTextField from "../forms/GSTextField";
 import withMuiTheme from "../../containers/hoc/withMuiTheme";
 
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
 import SearchBar from "material-ui-search-bar";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import CreateIcon from "@material-ui/icons/Create";
+import SendIcon from "@material-ui/icons/Send";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+import BlockIcon from "@material-ui/icons/Block";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
+import ReplayIcon from "@material-ui/icons/Replay";
 
 import * as yup from "yup";
 import Form from "react-formal";
@@ -582,37 +589,56 @@ export class AssignmentTexterContactControls extends React.Component {
       };
       if (status === "closed") {
         button = (
-          <Button
-            onClick={onClick("needsResponse")}
-            style={{
-              color: this.props.muiTheme.palette.text.primary,
-              backgroundColor: this.props.muiTheme.palette.background.default,
-              flex: "1 1 auto"
-            }}
-            disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
-            Reopen
-          </Button>
+          <Tooltip title="Reopen">
+            <span>
+              <IconButton
+                onClick={onClick("needsResponse")}
+                disabled={!!this.props.contact.optOut}
+                style={{
+                  backgroundColor: this.props.muiTheme.palette.background.paper,
+                  border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                  borderRadius: "8px",
+                  padding: "8px"
+                }}
+                size="small"
+              >
+                <ReplayIcon
+                  style={{
+                    color: this.props.muiTheme.palette.text.secondary,
+                    fontSize: "20px"
+                  }}
+                />
+              </IconButton>
+            </span>
+          </Tooltip>
         );
       } else {
         button = (
           <React.Fragment>
-            <Button
-              onClick={(event) => {
-                this.setState({ skipMenuAnchorEl: event.currentTarget });
-              }}
-              style={{
-                color: this.props.muiTheme.palette.text.primary,
-                backgroundColor: this.props.muiTheme.palette.background.default
-              }}
-              disabled={!!this.props.contact.optOut}
-              color="default"
-              variant="contained"
-            >
-              Skip <ArrowDropDownIcon style={{ marginLeft: -4, marginRight: -8 }} />
-            </Button>
+            <Tooltip title="Skip">
+              <span>
+                <IconButton
+                  onClick={(event) => {
+                    this.setState({ skipMenuAnchorEl: event.currentTarget });
+                  }}
+                  disabled={!!this.props.contact.optOut}
+                  style={{
+                    backgroundColor: this.props.muiTheme.palette.background.paper,
+                    border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                    borderRadius: "8px",
+                    padding: "8px"
+                  }}
+                  size="small"
+                >
+                  <SkipNextIcon
+                    style={{
+                      color: this.props.muiTheme.palette.text.secondary,
+                      fontSize: "20px"
+                    }}
+                  />
+                </IconButton>
+              </span>
+            </Tooltip>
             <Menu
               anchorEl={this.state.skipMenuAnchorEl}
               open={Boolean(this.state.skipMenuAnchorEl)}
@@ -691,11 +717,11 @@ export class AssignmentTexterContactControls extends React.Component {
               color:
                 (this.state.messageText || "").length >
                 window.MAX_MESSAGE_LENGTH
-                  ? "#d32f2f"
+                  ? "#E53935"
                   : (this.state.messageText || "").length >
                     window.MAX_MESSAGE_LENGTH * 0.9
-                  ? "#f57c00"
-                  : "#999"
+                  ? "#F9A825"
+                  : "#9CA3AF"
             }}
           >
             {(this.state.messageText || "").length} /{" "}
@@ -848,9 +874,13 @@ export class AssignmentTexterContactControls extends React.Component {
               });
             }}
             style={{
-              marginRight: "9px",
-              backgroundColor: isCurrentAnswer(opt) ? "#727272" : "white",
-              color: isCurrentAnswer(opt) ? "white" : "#494949"
+              marginRight: "8px",
+              backgroundColor: isCurrentAnswer(opt) ? "#2E7D52" : "#FFFFFF",
+              color: isCurrentAnswer(opt) ? "#FFFFFF" : "#374151",
+              borderColor: isCurrentAnswer(opt) ? "#2E7D52" : "#E5E7EB",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 500
             }}
             variant="outlined"
           >
@@ -864,11 +894,15 @@ export class AssignmentTexterContactControls extends React.Component {
               this.handleCannedResponseChange(script);
             }}
             style={{
-              marginRight: "9px",
-              color: isCurrentCannedResponse(script) ? "white" : "#494949",
+              marginRight: "8px",
+              color: isCurrentCannedResponse(script) ? "#FFFFFF" : "#374151",
               backgroundColor: isCurrentCannedResponse(script)
-                ? "#727272"
-                : "white"
+                ? "#2E7D52"
+                : "#FFFFFF",
+              borderColor: isCurrentCannedResponse(script) ? "#2E7D52" : "#E5E7EB",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 500
             }}
             title={script.title}
             variant="outlined"
@@ -892,58 +926,80 @@ export class AssignmentTexterContactControls extends React.Component {
         !availableSteps[0].question.answerOptions.length);
     return (
       <div className={css(flexStyles.subButtonsExitButtons)}>
-        <Button
-          onClick={
-            !disabled ? this.handleOpenAnswerResponsePopover : noAction => {}
-          }
-          style={{
-            backgroundColor: this.props.muiTheme.palette.background.default,
-            color: this.props.muiTheme.palette.text.primary
-          }}
-          disabled={disabled}
-          variant="outlined"
-        >
-          All Responses{" "}
-          <ArrowDropDownIcon style={{ verticalAlign: "middle" }} />
-        </Button>
+        <Tooltip title="All Responses">
+          <span>
+            <IconButton
+              onClick={
+                !disabled ? this.handleOpenAnswerResponsePopover : () => {}
+              }
+              disabled={disabled}
+              style={{
+                backgroundColor: this.props.muiTheme.palette.background.paper,
+                border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                borderRadius: "8px",
+                padding: "8px"
+              }}
+              size="small"
+            >
+              <QuestionAnswerIcon
+                style={{
+                  color: disabled
+                    ? this.props.muiTheme.palette.grey[400]
+                    : this.props.muiTheme.palette.text.secondary,
+                  fontSize: "20px"
+                }}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
 
-        <Button
-          {...dataTest("optOut")}
-          onClick={this.handleOneClickOptOut}
-          style={{
-            color: this.props.muiTheme.palette.error.main,
-            backgroundColor: this.props.muiTheme.palette.background.default
-          }}
-          disabled={!!this.props.contact.optOut}
-          variant="contained"
-        >
-          Opt-out
-        </Button>
+        <Tooltip title="Opt-out">
+          <span>
+            <IconButton
+              {...dataTest("optOut")}
+              onClick={this.handleOneClickOptOut}
+              disabled={!!this.props.contact.optOut}
+              style={{
+                backgroundColor: this.props.muiTheme.palette.background.paper,
+                border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                borderRadius: "8px",
+                padding: "8px"
+              }}
+              size="small"
+            >
+              <BlockIcon
+                style={{
+                  color: this.props.contact.optOut
+                    ? this.props.muiTheme.palette.grey[400]
+                    : this.props.muiTheme.palette.error.main,
+                  fontSize: "20px"
+                }}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
       </div>
     );
   }
 
   renderMessagingRowSendSkip(contact) {
-    const firstMessage = contact.messageStatus === "needsMessage";
     return (
       <div
         key="renderMessagingRowSendSkip"
         className={css(flexStyles.sectionSend)}
-        style={{ height: "54px" }}
       >
+        {this.renderNeedsResponseToggleButton(contact)}
         <Button
           {...dataTest("send")}
           onClick={this.handleClickSendMessageButton}
           disabled={this.props.disabled || !!this.props.contact.optOut}
-          style={{
-            width: "70%"
-          }}
+          className={css(flexStyles.subSectionSendButton)}
           color="primary"
           variant="contained"
+          endIcon={<SendIcon style={{ fontSize: "18px" }} />}
         >
-          &crarr; Send
+          Send
         </Button>
-        {this.renderNeedsResponseToggleButton(contact)}
       </div>
     );
   }
@@ -1064,8 +1120,8 @@ export class AssignmentTexterContactControls extends React.Component {
           style={{
             backgroundColor:
               this.props.muiTheme.palette.type === "light"
-                ? "#f0f0f0"
-                : this.props.muiTheme.palette.grey[700]
+                ? "#F3F4F6"
+                : this.props.muiTheme.palette.grey[800]
           }}
         >
           {internalComponent}
@@ -1162,8 +1218,8 @@ export class AssignmentTexterContactControls extends React.Component {
         style={{
           backgroundColor:
             this.props.muiTheme.palette.type === "light"
-              ? "#d6d7df"
-              : this.props.muiTheme.palette.grey[800]
+              ? "#F7F8FA"
+              : this.props.muiTheme.palette.grey[900]
         }}
       >
         {content}

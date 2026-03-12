@@ -19,15 +19,16 @@ import theme from "../styles/mui-theme";
 
 const styles = StyleSheet.create({
   container: {
-    margin: `${theme.spacing(2)}px 0`
+    margin: `${theme.spacing(1)}px 0`
   },
   image: {
-    height: 100
+    height: 80,
+    borderRadius: "8px"
   },
   buttonRow: {
     display: "flex",
     flexWrap: "wrap",
-    gap: theme.spacing(2),
+    gap: `${theme.spacing(1)}px`,
     marginBottom: theme.spacing(2)
   }
 });
@@ -148,16 +149,30 @@ export class AssignmentSummaryBase extends Component {
         className={css(styles.container)}
         {...dataTest(`assignmentSummary-${campaignId}`)}
       >
-        <Card>
+        <Card
+          style={{
+            borderLeft: `4px solid ${primaryColor || this.props.muiTheme.palette.primary.main}`,
+            borderRadius: "12px"
+          }}
+        >
           <CardHeader
             title={title}
             subheader={description}
-            style={{
-              backgroundColor: primaryColor,
-              color: cardTitleTextColor
+            titleTypographyProps={{
+              variant: "h6",
+              style: {
+                fontSize: "16px",
+                fontWeight: 600,
+                lineHeight: 1.3
+              }
             }}
             subheaderTypographyProps={{
-              color: "inherit"
+              variant: "body2",
+              style: {
+                fontSize: "13px",
+                color: this.props.muiTheme.palette.text.secondary,
+                marginTop: "2px"
+              }
             }}
             avatar={
               logoImageUrl ? (

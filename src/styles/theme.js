@@ -1,12 +1,14 @@
-const defaultFont = "Poppins";
+const defaultFont = "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 const text = {
   body: {
-    fontSize: 14,
+    fontSize: 15,
+    lineHeight: 1.5,
+    fontWeight: 400,
     fontFamily: defaultFont
   },
   link_light_bg: {
-    fontWeight: 400,
+    fontWeight: 500,
     textDecoration: "none",
     borderBottom: "1px solid",
     cursor: "pointer",
@@ -14,13 +16,13 @@ const text = {
       borderBottom: 0
     },
     "a:visited": {
-      fontWeight: 400,
+      fontWeight: 500,
       textDecoration: "none"
     },
     fontFamily: defaultFont
   },
   link_dark_bg: {
-    fontWeight: 400,
+    fontWeight: 500,
     textDecoration: "none",
     borderBottom: `1px solid`,
     cursor: "pointer",
@@ -28,7 +30,7 @@ const text = {
       borderBottom: 0
     },
     "a:visited": {
-      fontWeight: 400,
+      fontWeight: 500,
       textDecoration: "none"
     },
     fontFamily: defaultFont
@@ -36,10 +38,13 @@ const text = {
   header: {
     fontSize: "1.5em",
     fontWeight: 600,
+    lineHeight: 1.2,
     fontFamily: defaultFont
   },
   secondaryHeader: {
     fontSize: "1.25em",
+    fontWeight: 500,
+    lineHeight: 1.3,
     fontFamily: defaultFont
   }
 };
@@ -60,7 +65,7 @@ const layouts = {
     marginTop: "5vh",
     maxWidth: "80%",
     paddingBottom: "7vh",
-    borderRadius: 8,
+    borderRadius: 12,
     paddingTop: "7vh",
     marginLeft: "auto",
     marginRight: "auto",

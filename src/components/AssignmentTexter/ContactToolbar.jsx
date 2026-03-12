@@ -14,69 +14,67 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import { getLocalTime, getContactTimezone } from "../../lib/timezones";
 import { getProcessEnvDstReferenceTimezone } from "../../lib/tz-helpers";
 
-const inlineStyles = {
-  toolbar: {
-    backgroundColor: "rgb(81, 82, 89)",
-    color: "white",
-    padding: 0,
-    minHeight: "inherit"
-  }
-};
-
 const styles = StyleSheet.create({
   grow: {
     flexGrow: 1
   },
-  titleSmall: {
-    height: "18px",
-    lineHeight: "18px",
-    paddingTop: "4px",
+  contactName: {
+    fontSize: "18px",
+    fontWeight: 600,
+    lineHeight: "24px",
+    paddingRight: "10px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap"
+  },
+  contactMeta: {
+    fontSize: "12px",
+    opacity: 0.7,
+    lineHeight: "16px",
+    paddingTop: "2px",
     paddingRight: "10px",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     maxWidth: "95%"
   },
-  titleBig: {
-    height: "34px",
-    lineHeight: "34px",
-    paddingRight: "10px",
-    fontWeight: "bold",
-    color: "white",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap"
-    // maxWidth: "90%"
-  },
-  contactToolbarIconButton: {
-    padding: "3px",
-    height: "56px",
+  iconButton: {
+    padding: "6px",
+    height: "44px",
+    width: "44px",
     "@media(max-width: 350px)": {
-      width: "50px"
+      width: "40px"
     }
   },
   titleArea: {
-    // give room for the wrench sideboxes icon
     maxWidth: "calc(100% - 100px)"
   },
   contactArea: {
-    // give room for prev/next arrows
     maxWidth: "calc(100% - 200px)"
   },
   navigation: {
     flexGrow: 0,
     flexShrink: 0,
     display: "flex"
-    // flexDirection: "column",
-    // flexWrap: "wrap"
   },
   navigationTitle: {
     width: "4em",
-    // height: "100%",
     padding: "6px",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    fontSize: "13px",
+    fontWeight: 500
+  },
+  detailsPanel: {
+    padding: "8px 16px 12px",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "4px 16px",
+    fontSize: "13px"
+  },
+  detailLabel: {
+    opacity: 0.6
   }
 });
 
@@ -124,7 +122,7 @@ const ContactToolbar = function ContactToolbar(props) {
 
   formattedLocalTime = getLocalTime(offset, hasDST, campaignTimezone).format(
     "LT"
-  ); // format('h:mm a')
+  );
 
   let customFields = {};
   try {
@@ -136,26 +134,33 @@ const ContactToolbar = function ContactToolbar(props) {
 
   return (
     <div>
-      <Toolbar style={{ ...inlineStyles.toolbar, backgroundColor: "#7E808B" }}>
+      <Toolbar
+        style={{
+          backgroundColor: "#374151",
+          color: "#F3F4F6",
+          padding: "0 8px",
+          minHeight: "52px"
+        }}
+      >
         <Tooltip
           title={global.ASSIGNMENT_CONTACTS_SIDEBAR ? "Toggle Contact List" : ""}
         >
           <IconButton
-            className={css(styles.contactToolbarIconButton)}
+            className={css(styles.iconButton)}
             onClick={() => {
               global.ASSIGNMENT_CONTACTS_SIDEBAR
                 ? props.toggleContactList()
                 : null;
             }}
           >
-            <FaceIcon style={{ width: 42 }} htmlColor="white" />
+            <FaceIcon style={{ width: 28 }} htmlColor="#F3F4F6" />
           </IconButton>
         </Tooltip>
         <div className={css(styles.contactArea)}>
-          <div className={css(styles.titleSmall)} style={{ color: "white" }}>
+          <div className={css(styles.contactMeta)}>
             {formattedLocalTime} - {formattedLocation}
           </div>
-          <div className={css(styles.titleBig)} style={{ fontSize: "24px" }}>
+          <div className={css(styles.contactName)}>
             {campaignContact.firstName}
           </div>
         </div>
@@ -164,14 +169,13 @@ const ContactToolbar = function ContactToolbar(props) {
         {hasCustomFields && (
           <Tooltip title={detailsOpen ? "Hide Details" : "Show Details"}>
             <IconButton
-              className={css(styles.contactToolbarIconButton)}
+              className={css(styles.iconButton)}
               onClick={() => setDetailsOpen(!detailsOpen)}
-              style={{ width: "36px", padding: "3px" }}
             >
               {detailsOpen ? (
-                <ExpandLessIcon htmlColor="white" />
+                <ExpandLessIcon htmlColor="#9CA3AF" />
               ) : (
-                <ExpandMoreIcon htmlColor="white" />
+                <ExpandMoreIcon htmlColor="#9CA3AF" />
               )}
             </IconButton>
           </Tooltip>
@@ -182,10 +186,9 @@ const ContactToolbar = function ContactToolbar(props) {
               <IconButton
                 onClick={navigationToolbarChildren.onPrevious}
                 disabled={!navigationToolbarChildren.onPrevious}
-                className={css(styles.contactToolbarIconButton)}
-                style={{ flex: "0 0 56px", width: "45px" }}
+                className={css(styles.iconButton)}
               >
-                <ArrowBackIcon htmlColor="white" />
+                <ArrowBackIcon htmlColor="#F3F4F6" />
               </IconButton>
             </span>
           </Tooltip>
@@ -197,10 +200,9 @@ const ContactToolbar = function ContactToolbar(props) {
               <IconButton
                 onClick={navigationToolbarChildren.onNext}
                 disabled={!navigationToolbarChildren.onNext}
-                className={css(styles.contactToolbarIconButton)}
-                style={{ flex: "0 0 56px", width: "45px" }}
+                className={css(styles.iconButton)}
               >
-                <ArrowForwardIcon htmlColor="white" />
+                <ArrowForwardIcon htmlColor="#F3F4F6" />
               </IconButton>
             </span>
           </Tooltip>
@@ -209,20 +211,16 @@ const ContactToolbar = function ContactToolbar(props) {
       {hasCustomFields && (
         <Collapse in={detailsOpen}>
           <div
+            className={css(styles.detailsPanel)}
             style={{
-              backgroundColor: "rgb(100, 101, 108)",
-              color: "white",
-              padding: "4px 16px 8px",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "4px 16px",
-              fontSize: "13px"
+              backgroundColor: "#4B5563",
+              color: "#F3F4F6"
             }}
           >
             {Object.entries(customFields).map(([key, value]) =>
               value ? (
                 <span key={key}>
-                  <span style={{ opacity: 0.7 }}>{key}:</span> {value}
+                  <span className={css(styles.detailLabel)}>{key}:</span> {value}
                 </span>
               ) : null
             )}
@@ -234,7 +232,7 @@ const ContactToolbar = function ContactToolbar(props) {
 };
 
 ContactToolbar.propTypes = {
-  campaignContact: PropTypes.object, // contacts for current assignment
+  campaignContact: PropTypes.object,
   campaign: PropTypes.object,
   navigationToolbarChildren: PropTypes.object,
   toggleContactList: PropTypes.func
