@@ -254,6 +254,76 @@ const rootSchema = gql`
     pageInfo: PageInfo
   }
 
+  input ContactExplorerFilter {
+    searchText: String
+    campaignIds: [String]
+    messageStatus: [String]
+    isOptedOut: Boolean
+    tagIds: [String]
+    errorCode: [Int]
+    sortBy: String
+    sortOrder: String
+  }
+
+  type ContactExplorerEntry {
+    id: ID!
+    firstName: String
+    lastName: String
+    cell: String!
+    zip: String
+    externalId: String
+    customFields: JSON
+    messageStatus: String
+    isOptedOut: Boolean
+    errorCode: Int
+    campaignId: Int
+    campaignTitle: String
+    assignmentId: Int
+    texterFirstName: String
+    texterLastName: String
+    messagesSent: Int
+    messagesReceived: Int
+    lastMessageAt: Date
+    updatedAt: Date
+    tags: [ContactTag]
+  }
+
+  type ContactExplorerReturn {
+    contacts: [ContactExplorerEntry]
+    pageInfo: PageInfo
+  }
+
+  type ContactDetail {
+    id: ID!
+    firstName: String
+    lastName: String
+    cell: String!
+    zip: String
+    externalId: String
+    customFields: JSON
+    messageStatus: String
+    isOptedOut: Boolean
+    errorCode: Int
+    campaignId: Int
+    campaignTitle: String
+    texterFirstName: String
+    texterLastName: String
+    messages: [Message]
+    tags: [ContactTag]
+    questionResponseValues: [AnswerOption]
+    optOutDate: Date
+    campaignHistory: [ContactCampaignHistory]
+  }
+
+  type ContactCampaignHistory {
+    campaignId: Int
+    campaignTitle: String
+    messageStatus: String
+    messagesSent: Int
+    messagesReceived: Int
+    lastMessageAt: Date
+  }
+
   type RootQuery {
     currentUser: User
     organization(id: String!, utc: String): Organization
@@ -294,6 +364,15 @@ const rootSchema = gql`
       contactListId: String!
       cursor: OffsetLimitCursor
     ): ContactListEntriesReturn
+    contactExplorer(
+      organizationId: String!
+      cursor: OffsetLimitCursor
+      filter: ContactExplorerFilter
+    ): ContactExplorerReturn
+    contactDetail(
+      organizationId: String!
+      campaignContactId: String!
+    ): ContactDetail
   }
 
   type RootMutation {

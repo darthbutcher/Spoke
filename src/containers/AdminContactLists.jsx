@@ -5,14 +5,14 @@ import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -31,11 +31,13 @@ import theme from "../styles/theme";
 import loadData from "./hoc/load-data";
 import { parseCSV } from "../lib/parse_csv";
 import { topLevelUploadFields } from "../lib/parse_csv";
+import ContactExplorer from "../components/ContactExplorer";
 
 class AdminContactLists extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeTab: 0,
       uploadDialogOpen: false,
       deleteDialogOpen: false,
       viewDialogOpen: false,
@@ -51,6 +53,10 @@ class AdminContactLists extends React.Component {
       snackbarMessage: ""
     };
   }
+
+  handleTabChange = (event, newValue) => {
+    this.setState({ activeTab: newValue });
+  };
 
   handleOpenUpload = () => {
     this.setState({
@@ -95,7 +101,6 @@ class AdminContactLists extends React.Component {
         if (result.error) {
           this.setState({ parseError: result.error, parsedContacts: null });
         } else {
-          // Convert back to the row format for storage
           const rows = result.contacts.map(c => {
             const customFields = c.custom_fields
               ? JSON.parse(c.custom_fields)
@@ -194,7 +199,7 @@ class AdminContactLists extends React.Component {
     });
   }
 
-  render() {
+  renderContactListsTab() {
     const {
       uploadDialogOpen,
       deleteDialogOpen,
@@ -205,8 +210,7 @@ class AdminContactLists extends React.Component {
       parsedContacts,
       validationStats,
       parseError,
-      uploading,
-      snackbarMessage
+      uploading
     } = this.state;
 
     const contactLists =
@@ -276,7 +280,7 @@ class AdminContactLists extends React.Component {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="textSecondary">
-                      {cl.fileName || "—"}
+                      {cl.fileName || "\u2014"}
                     </Typography>
                   </TableCell>
                   <TableCell>{this.formatDate(cl.createdAt)}</TableCell>
@@ -394,10 +398,7 @@ class AdminContactLists extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseDelete}>Cancel</Button>
-            <Button
-              onClick={this.handleDelete}
-              style={{ color: "#E53935" }}
-            >
+            <Button onClick={this.handleDelete} style={{ color: "#E53935" }}>
               Delete
             </Button>
           </DialogActions>
@@ -423,7 +424,7 @@ class AdminContactLists extends React.Component {
                 >
                   {selectedList.contactCount} contacts
                   {selectedList.description &&
-                    ` — ${selectedList.description}`}
+                    ` \u2014 ${selectedList.description}`}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   Contact details are available when using this list in a
@@ -436,6 +437,32 @@ class AdminContactLists extends React.Component {
             <Button onClick={this.handleCloseView}>Close</Button>
           </DialogActions>
         </Dialog>
+      </div>
+    );
+  }
+
+  render() {
+    const { activeTab, snackbarMessage } = this.state;
+    const organizationId = this.props.params.organizationId;
+
+    return (
+      <div>
+        <Tabs
+          value={activeTab}
+          onChange={this.handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          style={{ marginBottom: 16 }}
+        >
+          <Tab label="Contact Explorer" />
+          <Tab label="Contact Lists" />
+        </Tabs>
+
+        {activeTab === 0 && (
+          <ContactExplorer organizationId={organizationId} />
+        )}
+
+        {activeTab === 1 && this.renderContactListsTab()}
 
         <Snackbar
           open={!!snackbarMessage}

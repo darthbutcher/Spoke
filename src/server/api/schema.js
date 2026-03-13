@@ -2095,6 +2095,358 @@ const rootResolvers = {
           previous: offset > 0 ? Math.max(0, offset - limit) : null
         }
       };
+    },
+    contactExplorer: async (
+      _,
+      { organizationId, cursor, filter },
+      { user }
+    ) => {
+      await accessRequired(user, organizationId, "ADMIN");
+      const offset = cursor ? cursor.offset : 0;
+      const limit = cursor ? cursor.limit : 50;
+      const f = filter || {};
+
+      // Base query: campaign_contact joined with campaign (active campaigns in org)
+      const baseQuery = r
+        .knex("campaign_contact")
+        .join("campaign", "campaign.id", "campaign_contact.campaign_id")
+        .where("campaign.organization_id", organizationId)
+        .where("campaign.is_started", true);
+
+      // Apply filters
+      if (f.searchText) {
+        const search = `%${f.searchText}%`;
+        baseQuery.where(function() {
+          this.where("campaign_contact.first_name", "like", search)
+            .orWhere("campaign_contact.last_name", "like", search)
+            .orWhere("campaign_contact.cell", "like", search)
+            .orWhere("campaign_contact.external_id", "like", search);
+        });
+      }
+
+      if (f.campaignIds && f.campaignIds.length > 0) {
+        baseQuery.whereIn("campaign_contact.campaign_id", f.campaignIds);
+      }
+
+      if (f.messageStatus && f.messageStatus.length > 0) {
+        baseQuery.whereIn("campaign_contact.message_status", f.messageStatus);
+      }
+
+      if (f.isOptedOut !== undefined && f.isOptedOut !== null) {
+        baseQuery.where("campaign_contact.is_opted_out", f.isOptedOut);
+      }
+
+      if (f.errorCode && f.errorCode.length > 0) {
+        if (f.errorCode.includes(0)) {
+          const nonZero = f.errorCode.filter(c => c !== 0);
+          baseQuery.where(function() {
+            this.whereNull("campaign_contact.error_code");
+            if (nonZero.length > 0) {
+              this.orWhereIn("campaign_contact.error_code", nonZero);
+            }
+          });
+        } else {
+          baseQuery.whereIn("campaign_contact.error_code", f.errorCode);
+        }
+      }
+
+      if (f.tagIds && f.tagIds.length > 0) {
+        baseQuery.whereExists(function() {
+          this.select(r.knex.raw(1))
+            .from("tag_campaign_contact")
+            .whereRaw(
+              "tag_campaign_contact.campaign_contact_id = campaign_contact.id"
+            )
+            .whereIn("tag_campaign_contact.tag_id", f.tagIds);
+        });
+      }
+
+      // Count query
+      const countQuery = baseQuery
+        .clone()
+        .clearSelect()
+        .clearOrder()
+        .count("campaign_contact.id as count")
+        .first();
+
+      // Main data query with message stats subquery
+      const dataQuery = baseQuery
+        .clone()
+        .leftJoin(
+          "assignment",
+          "assignment.id",
+          "campaign_contact.assignment_id"
+        )
+        .leftJoin("user as texter", "texter.id", "assignment.user_id")
+        .leftJoin(
+          r.knex.raw(`(
+            SELECT
+              campaign_contact_id,
+              SUM(CASE WHEN is_from_contact = false THEN 1 ELSE 0 END) as sent_count,
+              SUM(CASE WHEN is_from_contact = true THEN 1 ELSE 0 END) as received_count,
+              MAX(created_at) as last_message_at
+            FROM message
+            GROUP BY campaign_contact_id
+          ) as msg_stats`),
+          "msg_stats.campaign_contact_id",
+          "campaign_contact.id"
+        )
+        .select(
+          "campaign_contact.id",
+          "campaign_contact.first_name",
+          "campaign_contact.last_name",
+          "campaign_contact.cell",
+          "campaign_contact.zip",
+          "campaign_contact.external_id",
+          "campaign_contact.custom_fields",
+          "campaign_contact.message_status",
+          "campaign_contact.is_opted_out",
+          "campaign_contact.error_code",
+          "campaign_contact.campaign_id",
+          "campaign_contact.assignment_id",
+          "campaign_contact.updated_at",
+          "campaign.title as campaign_title",
+          "texter.first_name as texter_first_name",
+          "texter.last_name as texter_last_name",
+          "msg_stats.sent_count",
+          "msg_stats.received_count",
+          "msg_stats.last_message_at"
+        );
+
+      // Apply sorting
+      const sortBy = f.sortBy || "lastMessageAt";
+      const sortOrder = f.sortOrder || "desc";
+      const sortMap = {
+        lastMessageAt: "msg_stats.last_message_at",
+        name: "campaign_contact.last_name",
+        messageCount: "msg_stats.sent_count",
+        status: "campaign_contact.message_status",
+        updatedAt: "campaign_contact.updated_at"
+      };
+      const sortColumn = sortMap[sortBy] || "msg_stats.last_message_at";
+      dataQuery.orderBy(sortColumn, sortOrder);
+      dataQuery.orderBy("campaign_contact.id", "desc");
+
+      dataQuery.offset(offset).limit(limit);
+
+      const [contacts, countResult] = await Promise.all([
+        dataQuery,
+        countQuery
+      ]);
+
+      // Load tags for all contacts in batch
+      const contactIds = contacts.map(c => c.id);
+      let tagsMap = {};
+      if (contactIds.length > 0) {
+        const tags = await r
+          .knex("tag_campaign_contact")
+          .join("tag", "tag.id", "tag_campaign_contact.tag_id")
+          .whereIn("tag_campaign_contact.campaign_contact_id", contactIds)
+          .where("tag.is_deleted", false)
+          .select(
+            "tag_campaign_contact.campaign_contact_id",
+            "tag.id",
+            "tag.name",
+            "tag_campaign_contact.value"
+          );
+        tags.forEach(t => {
+          if (!tagsMap[t.campaign_contact_id]) {
+            tagsMap[t.campaign_contact_id] = [];
+          }
+          tagsMap[t.campaign_contact_id].push({
+            id: t.id,
+            name: t.name,
+            value: t.value
+          });
+        });
+      }
+
+      const total = countResult ? countResult.count : 0;
+
+      return {
+        contacts: contacts.map(c => ({
+          id: c.id,
+          firstName: c.first_name,
+          lastName: c.last_name,
+          cell: c.cell,
+          zip: c.zip,
+          externalId: c.external_id,
+          customFields: c.custom_fields,
+          messageStatus: c.message_status,
+          isOptedOut: c.is_opted_out,
+          errorCode: c.error_code,
+          campaignId: c.campaign_id,
+          campaignTitle: c.campaign_title,
+          assignmentId: c.assignment_id,
+          texterFirstName: c.texter_first_name,
+          texterLastName: c.texter_last_name,
+          messagesSent: c.sent_count || 0,
+          messagesReceived: c.received_count || 0,
+          lastMessageAt: c.last_message_at,
+          updatedAt: c.updated_at,
+          tags: tagsMap[c.id] || []
+        })),
+        pageInfo: {
+          offset,
+          limit,
+          total,
+          next: offset + limit < total ? offset + limit : null,
+          previous: offset > 0 ? Math.max(0, offset - limit) : null
+        }
+      };
+    },
+    contactDetail: async (
+      _,
+      { organizationId, campaignContactId },
+      { user }
+    ) => {
+      await accessRequired(user, organizationId, "ADMIN");
+
+      // Get contact with campaign info
+      const contact = await r
+        .knex("campaign_contact")
+        .join("campaign", "campaign.id", "campaign_contact.campaign_id")
+        .where("campaign_contact.id", campaignContactId)
+        .where("campaign.organization_id", organizationId)
+        .select(
+          "campaign_contact.*",
+          "campaign.title as campaign_title"
+        )
+        .first();
+
+      if (!contact) {
+        throw new GraphQLError("Contact not found");
+      }
+
+      // Get texter info
+      let texterFirstName = null;
+      let texterLastName = null;
+      if (contact.assignment_id) {
+        const assignment = await r
+          .knex("assignment")
+          .join("user", "user.id", "assignment.user_id")
+          .where("assignment.id", contact.assignment_id)
+          .select("user.first_name", "user.last_name")
+          .first();
+        if (assignment) {
+          texterFirstName = assignment.first_name;
+          texterLastName = assignment.last_name;
+        }
+      }
+
+      // Get messages
+      const messages = await r
+        .knex("message")
+        .where("campaign_contact_id", campaignContactId)
+        .orderBy("created_at", "asc")
+        .select("*");
+
+      // Get tags
+      const tags = await r
+        .knex("tag_campaign_contact")
+        .join("tag", "tag.id", "tag_campaign_contact.tag_id")
+        .where("tag_campaign_contact.campaign_contact_id", campaignContactId)
+        .where("tag.is_deleted", false)
+        .select(
+          "tag.id",
+          "tag.name",
+          "tag_campaign_contact.value",
+          "tag_campaign_contact.campaign_contact_id"
+        );
+
+      // Get question responses
+      const questionResponses = await r
+        .knex("question_response")
+        .join(
+          "interaction_step",
+          "interaction_step.id",
+          "question_response.interaction_step_id"
+        )
+        .where("question_response.campaign_contact_id", campaignContactId)
+        .select(
+          "interaction_step.question as value",
+          "question_response.value as interaction_step_id"
+        );
+
+      // Get opt-out date if opted out
+      let optOutDate = null;
+      if (contact.is_opted_out) {
+        const optOut = await r
+          .knex("opt_out")
+          .where("cell", contact.cell)
+          .where("organization_id", organizationId)
+          .select("created_at")
+          .first();
+        if (optOut) {
+          optOutDate = optOut.created_at;
+        }
+      }
+
+      // Get campaign history for this phone number
+      const campaignHistory = await r
+        .knex("campaign_contact")
+        .join("campaign", "campaign.id", "campaign_contact.campaign_id")
+        .where("campaign_contact.cell", contact.cell)
+        .where("campaign.organization_id", organizationId)
+        .leftJoin(
+          r.knex.raw(`(
+            SELECT
+              campaign_contact_id,
+              SUM(CASE WHEN is_from_contact = false THEN 1 ELSE 0 END) as sent_count,
+              SUM(CASE WHEN is_from_contact = true THEN 1 ELSE 0 END) as received_count,
+              MAX(created_at) as last_message_at
+            FROM message
+            GROUP BY campaign_contact_id
+          ) as msg_stats`),
+          "msg_stats.campaign_contact_id",
+          "campaign_contact.id"
+        )
+        .select(
+          "campaign_contact.campaign_id",
+          "campaign.title as campaign_title",
+          "campaign_contact.message_status",
+          "msg_stats.sent_count",
+          "msg_stats.received_count",
+          "msg_stats.last_message_at"
+        )
+        .orderBy("campaign.id", "desc");
+
+      return {
+        id: contact.id,
+        firstName: contact.first_name,
+        lastName: contact.last_name,
+        cell: contact.cell,
+        zip: contact.zip,
+        externalId: contact.external_id,
+        customFields: contact.custom_fields,
+        messageStatus: contact.message_status,
+        isOptedOut: contact.is_opted_out,
+        errorCode: contact.error_code,
+        campaignId: contact.campaign_id,
+        campaignTitle: contact.campaign_title,
+        texterFirstName,
+        texterLastName,
+        messages,
+        tags: tags.map(t => ({
+          id: t.id,
+          name: t.name,
+          campaignContactId: t.campaign_contact_id,
+          value: t.value
+        })),
+        questionResponseValues: questionResponses.map(qr => ({
+          value: qr.value,
+          interactionStepId: qr.interaction_step_id
+        })),
+        optOutDate,
+        campaignHistory: campaignHistory.map(ch => ({
+          campaignId: ch.campaign_id,
+          campaignTitle: ch.campaign_title,
+          messageStatus: ch.message_status,
+          messagesSent: ch.sent_count || 0,
+          messagesReceived: ch.received_count || 0,
+          lastMessageAt: ch.last_message_at
+        }))
+      };
     }
   }
 };

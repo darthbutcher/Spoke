@@ -13,6 +13,7 @@ export const schema = gql`
   type ContactTag {
     campaignContactId: String
     id: ID
+    name: String
     value: String
   }
 `;
