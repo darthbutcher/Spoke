@@ -2161,17 +2161,46 @@ const rootResolvers = {
         });
       }
 
-      // Count query
-      const countQuery = baseQuery
-        .clone()
-        .clearSelect()
-        .clearOrder()
-        .count("campaign_contact.id as count")
-        .first();
+      // Count query (built separately to avoid clone issues)
+      const countQuery = r
+        .knex("campaign_contact")
+        .join("campaign", "campaign.id", "campaign_contact.campaign_id")
+        .where("campaign.organization_id", organizationId)
+        .where("campaign.is_started", true);
+
+      // Re-apply filters to count query
+      if (f.searchText) {
+        const search2 = `%${f.searchText}%`;
+        countQuery.where(function() {
+          this.where("campaign_contact.first_name", "like", search2)
+            .orWhere("campaign_contact.last_name", "like", search2)
+            .orWhere("campaign_contact.cell", "like", search2)
+            .orWhere("campaign_contact.external_id", "like", search2);
+        });
+      }
+      if (f.campaignIds && f.campaignIds.length > 0) {
+        countQuery.whereIn("campaign_contact.campaign_id", f.campaignIds);
+      }
+      if (f.messageStatus && f.messageStatus.length > 0) {
+        countQuery.whereIn("campaign_contact.message_status", f.messageStatus);
+      }
+      if (f.isOptedOut !== undefined && f.isOptedOut !== null) {
+        countQuery.where("campaign_contact.is_opted_out", f.isOptedOut);
+      }
+      if (f.tagIds && f.tagIds.length > 0) {
+        countQuery.whereExists(function() {
+          this.select(r.knex.raw(1))
+            .from("tag_campaign_contact")
+            .whereRaw(
+              "tag_campaign_contact.campaign_contact_id = campaign_contact.id"
+            )
+            .whereIn("tag_campaign_contact.tag_id", f.tagIds);
+        });
+      }
+      countQuery.count("campaign_contact.id as count").first();
 
       // Main data query with message stats subquery
       const dataQuery = baseQuery
-        .clone()
         .leftJoin(
           "assignment",
           "assignment.id",
