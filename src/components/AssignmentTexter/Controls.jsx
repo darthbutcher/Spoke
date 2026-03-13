@@ -1160,8 +1160,8 @@ export class AssignmentTexterContactControls extends React.Component {
         <Empty
           title={
             contact.optOut
-              ? `${contact.firstName} is opted out -- skip this contact`
-              : `This is your first message to ${contact.firstName}`
+              ? `${contact.firstName}${contact.lastName ? ` ${contact.lastName}` : ""} is opted out -- skip this contact`
+              : `This is your first message to ${contact.firstName}${contact.lastName ? ` ${contact.lastName}` : ""}`
           }
           icon={<CreateIcon color="primary" />}
         />,

@@ -161,7 +161,7 @@ const ContactToolbar = function ContactToolbar(props) {
             {formattedLocalTime} - {formattedLocation}
           </div>
           <div className={css(styles.contactName)}>
-            {campaignContact.firstName}
+            {campaignContact.firstName}{campaignContact.lastName ? ` ${campaignContact.lastName}` : ""}
           </div>
         </div>
 
