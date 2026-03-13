@@ -219,6 +219,41 @@ const rootSchema = gql`
     TIMEZONE
   }
 
+  type ContactList {
+    id: ID!
+    organizationId: String!
+    name: String!
+    description: String
+    fileName: String
+    contactCount: Int!
+    customFields: JSON
+    createdBy: User
+    createdAt: Date
+    updatedAt: Date
+  }
+
+  type ContactListEntry {
+    id: ID!
+    contactListId: String!
+    firstName: String
+    lastName: String
+    cell: String!
+    zip: String
+    externalId: String
+    customFields: JSON
+    createdAt: Date
+  }
+
+  type ContactListEntriesReturn {
+    entries: [ContactListEntry]
+    pageInfo: PageInfo
+  }
+
+  type ContactListsReturn {
+    contactLists: [ContactList]
+    pageInfo: PageInfo
+  }
+
   type RootQuery {
     currentUser: User
     organization(id: String!, utc: String): Organization
@@ -251,6 +286,14 @@ const rootSchema = gql`
       filterBy: FilterPeopleBy
     ): UsersReturn
     user(organizationId: String!, userId: Int): User
+    contactLists(
+      organizationId: String!
+      cursor: OffsetLimitCursor
+    ): ContactListsReturn
+    contactListEntries(
+      contactListId: String!
+      cursor: OffsetLimitCursor
+    ): ContactListEntriesReturn
   }
 
   type RootMutation {
@@ -418,6 +461,17 @@ const rootSchema = gql`
     deleteOrganization(organizationId: String!): Boolean
     archiveOrganization(organizationId: String!): Organization
     unarchiveOrganization(organizationId: String!): Organization
+    createContactList(
+      organizationId: String!
+      name: String!
+      description: String
+      fileName: String
+      contacts: String!
+    ): ContactList
+    deleteContactList(
+      organizationId: String!
+      contactListId: String!
+    ): Boolean
   }
 
   schema {

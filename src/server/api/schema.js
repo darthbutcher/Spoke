@@ -1714,6 +1714,109 @@ const rootMutations = {
         .where("id", id)
         .update({ is_deleted: true });
       return { id };
+    },
+    createContactList: async (
+      _,
+      { organizationId, name, description, fileName, contacts },
+      { user }
+    ) => {
+      await accessRequired(user, organizationId, "ADMIN");
+
+      const rows = JSON.parse(contacts);
+      if (!rows || rows.length === 0) {
+        throw new GraphQLError("No valid contacts provided");
+      }
+
+      // Detect custom fields (anything beyond firstName, lastName, cell, zip, external_id)
+      const standardFields = [
+        "firstName",
+        "lastName",
+        "cell",
+        "zip",
+        "external_id"
+      ];
+      const allKeys = Object.keys(rows[0]);
+      const customFieldNames = allKeys.filter(
+        k => !standardFields.includes(k)
+      );
+
+      const now = new Date();
+      const [contactListId] = await r.knex("contact_list").insert({
+        organization_id: organizationId,
+        name,
+        description: description || null,
+        file_name: fileName || null,
+        contact_count: rows.length,
+        custom_fields: JSON.stringify(customFieldNames),
+        created_by: user.id,
+        created_at: now,
+        updated_at: now
+      });
+
+      // Insert entries in batches
+      const batchSize = 1000;
+      for (let i = 0; i < rows.length; i += batchSize) {
+        const batch = rows.slice(i, i + batchSize).map(row => {
+          const customFields = {};
+          customFieldNames.forEach(k => {
+            if (row[k] !== undefined) {
+              customFields[k] = row[k];
+            }
+          });
+          return {
+            contact_list_id: contactListId,
+            first_name: row.firstName || "",
+            last_name: row.lastName || "",
+            cell: row.cell,
+            zip: row.zip || null,
+            external_id: row.external_id || null,
+            custom_fields: JSON.stringify(customFields),
+            created_at: now
+          };
+        });
+        await r.knex("contact_list_entry").insert(batch);
+      }
+
+      const contactList = await r
+        .knex("contact_list")
+        .where("id", contactListId)
+        .first();
+
+      return {
+        id: contactList.id,
+        organizationId: contactList.organization_id,
+        name: contactList.name,
+        description: contactList.description,
+        fileName: contactList.file_name,
+        contactCount: contactList.contact_count,
+        customFields: contactList.custom_fields,
+        createdAt: contactList.created_at,
+        updatedAt: contactList.updated_at
+      };
+    },
+    deleteContactList: async (
+      _,
+      { organizationId, contactListId },
+      { user }
+    ) => {
+      await accessRequired(user, organizationId, "ADMIN");
+
+      const contactList = await r
+        .knex("contact_list")
+        .where({ id: contactListId, organization_id: organizationId })
+        .first();
+
+      if (!contactList) {
+        throw new GraphQLError("Contact list not found");
+      }
+
+      // Entries cascade-delete via FK
+      await r
+        .knex("contact_list")
+        .where("id", contactListId)
+        .del();
+
+      return true;
     }
   }
 };
@@ -1886,6 +1989,112 @@ const rootResolvers = {
           "user.*"
         )
         .first();
+    },
+    contactLists: async (_, { organizationId, cursor }, { user }) => {
+      await accessRequired(user, organizationId, "ADMIN");
+      const offset = cursor ? cursor.offset : 0;
+      const limit = cursor ? cursor.limit : 50;
+
+      const query = r
+        .knex("contact_list")
+        .where("organization_id", organizationId)
+        .orderBy("created_at", "desc");
+
+      const countQuery = r
+        .knex("contact_list")
+        .where("organization_id", organizationId)
+        .count("* as count")
+        .first();
+
+      const [contactLists, countResult] = await Promise.all([
+        query
+          .clone()
+          .offset(offset)
+          .limit(limit)
+          .select("*"),
+        countQuery
+      ]);
+
+      const total = countResult.count;
+
+      return {
+        contactLists: contactLists.map(cl => ({
+          id: cl.id,
+          organizationId: cl.organization_id,
+          name: cl.name,
+          description: cl.description,
+          fileName: cl.file_name,
+          contactCount: cl.contact_count,
+          customFields: cl.custom_fields,
+          createdAt: cl.created_at,
+          updatedAt: cl.updated_at
+        })),
+        pageInfo: {
+          offset,
+          limit,
+          total,
+          next: offset + limit < total ? offset + limit : null,
+          previous: offset > 0 ? Math.max(0, offset - limit) : null
+        }
+      };
+    },
+    contactListEntries: async (_, { contactListId, cursor }, { user }) => {
+      const contactList = await r
+        .knex("contact_list")
+        .where("id", contactListId)
+        .first();
+
+      if (!contactList) {
+        throw new GraphQLError("Contact list not found");
+      }
+
+      await accessRequired(user, contactList.organization_id, "ADMIN");
+
+      const offset = cursor ? cursor.offset : 0;
+      const limit = cursor ? cursor.limit : 50;
+
+      const query = r
+        .knex("contact_list_entry")
+        .where("contact_list_id", contactListId)
+        .orderBy("id", "asc");
+
+      const countQuery = r
+        .knex("contact_list_entry")
+        .where("contact_list_id", contactListId)
+        .count("* as count")
+        .first();
+
+      const [entries, countResult] = await Promise.all([
+        query
+          .clone()
+          .offset(offset)
+          .limit(limit)
+          .select("*"),
+        countQuery
+      ]);
+
+      const total = countResult.count;
+
+      return {
+        entries: entries.map(e => ({
+          id: e.id,
+          contactListId: e.contact_list_id,
+          firstName: e.first_name,
+          lastName: e.last_name,
+          cell: e.cell,
+          zip: e.zip,
+          externalId: e.external_id,
+          customFields: e.custom_fields,
+          createdAt: e.created_at
+        })),
+        pageInfo: {
+          offset,
+          limit,
+          total,
+          next: offset + limit < total ? offset + limit : null,
+          previous: offset > 0 ? Math.max(0, offset - limit) : null
+        }
+      };
     }
   }
 };

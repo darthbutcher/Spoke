@@ -39,6 +39,7 @@ import {
 } from "./components/AssignmentTexter/Demo";
 import AssignmentSummary from "./components/AssignmentSummary";
 import AdminPhoneNumberInventory from "./containers/AdminPhoneNumberInventory";
+import AdminContactLists from "./containers/AdminContactLists";
 
 const checkDowntime = (nextState, replace) => {
   if (global.DOWNTIME && nextState.location.pathname !== "/downtime") {
@@ -79,7 +80,8 @@ export default function makeRoutes(requireAuth = () => {}) {
               />
             </Route>
           </Route>
-          <Route path="people" component={AdminPersonList} />
+          <Route path="people" component={AdminContactLists} />
+          <Route path="users" component={AdminPersonList} />
           <Route path="incoming" component={AdminIncomingMessageList} />
           <Route path="bulk-script-editor" component={AdminBulkScriptEditor} />
           <Route path="tags" component={Tags} />
