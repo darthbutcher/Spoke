@@ -2,6 +2,10 @@ import PropTypes from "prop-types";
 import React from "react";
 
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import SearchIcon from "@material-ui/icons/Search";
 import CreateIcon from "@material-ui/icons/Create";
 import ClearIcon from "@material-ui/icons/Clear";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -26,7 +30,8 @@ class ScriptList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogOpen: false
+      dialogOpen: false,
+      searchText: ""
     };
   }
 
@@ -70,8 +75,18 @@ class ScriptList extends React.Component {
       }
     };
 
+    const { searchText } = this.state;
     const rightIconButton = null;
-    const listItems = scripts.map(script => (
+
+    const filteredScripts = searchText
+      ? scripts.filter(
+          script =>
+            script.title.toLowerCase().includes(searchText.toLowerCase()) ||
+            script.text.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : scripts;
+
+    const listItems = filteredScripts.map(script => (
       <ListItem
         button
         value={script.text}
@@ -93,11 +108,48 @@ class ScriptList extends React.Component {
       </ListItem>
     ));
 
+    const searchInput =
+      scripts.length > 5 ? (
+        <TextField
+          placeholder="Filter responses..."
+          value={searchText}
+          onChange={e => this.setState({ searchText: e.target.value })}
+          size="small"
+          fullWidth
+          style={{ padding: "4px 16px" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" style={{ opacity: 0.5 }} />
+              </InputAdornment>
+            ),
+            endAdornment: searchText ? (
+              <InputAdornment position="end">
+                <IconButton
+                  size="small"
+                  onClick={() => this.setState({ searchText: "" })}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ) : null
+          }}
+        />
+      ) : null;
+
     const list =
       scripts.length === 0 ? null : (
         <List>
           {subheader ? <ListSubheader>{subheader}</ListSubheader> : ""}
+          {searchInput}
           {listItems}
+          {filteredScripts.length === 0 && searchText && (
+            <ListItem>
+              <ListItemText
+                secondary={`No responses matching "${searchText}"`}
+              />
+            </ListItem>
+          )}
           <Divider />
         </List>
       );

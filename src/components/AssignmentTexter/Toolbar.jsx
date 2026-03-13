@@ -1,20 +1,19 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 import HomeIcon from "@material-ui/icons/Home";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import BuildIcon from "@material-ui/icons/Build";
-
-const inlineStyles = {
-  toolbar: {
-    backgroundColor: "rgb(81, 82, 89)",
-    color: "white",
-    padding: 0,
-    minHeight: "inherit"
-  }
-};
 
 const styles = StyleSheet.create({
   grow: {
@@ -25,60 +24,57 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "column",
     alignContent: "flex-start"
-    // marginLeft: "-24px"
   },
   campaignData: {
     flex: "1 2 auto",
     maxWidth: "80%",
     "@media(max-width: 375px)": {
-      maxWidth: "70%" // iphone 5 and X
+      maxWidth: "70%"
     }
   },
   contactData: {
     flex: "1 2 auto",
     maxWidth: "80%",
     "@media(max-width: 375px)": {
-      maxWidth: "50%" // iphone 5 and X
+      maxWidth: "50%"
     }
   },
   titleArea: {
-    // give room for the wrench sideboxes icon
     maxWidth: "calc(100% - 100px)"
   },
   contactArea: {
-    // give room for prev/next arrows
     maxWidth: "calc(100% - 200px)"
   },
-  titleSmall: {
-    height: "18px",
-    lineHeight: "18px",
-    paddingTop: "4px",
+  campaignId: {
+    fontSize: "12px",
+    opacity: 0.6,
+    lineHeight: "16px",
+    paddingTop: "2px",
     paddingRight: "10px",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     maxWidth: "95%"
   },
-  titleBig: {
-    height: "34px",
-    lineHeight: "34px",
+  campaignTitle: {
+    fontSize: "16px",
+    fontWeight: 600,
+    lineHeight: "24px",
     paddingRight: "10px",
-    fontWeight: "bold",
-    color: "white",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap"
   },
-  contactToolbarIconButton: {
-    padding: "3px",
-    height: "56px",
+  iconButton: {
+    padding: "6px",
+    height: "44px",
+    width: "44px",
     "@media(max-width: 350px)": {
-      width: "50px"
+      width: "40px"
     }
   },
   navigationSideBox: {
     flexBasis: "24px",
-    // width also in Controls.jsx::getSideboxDialogOpen
     "@media(min-width: 575px)": {
       display: "none"
     }
@@ -87,40 +83,71 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0,
     display: "flex"
-    // flexDirection: "column",
-    // flexWrap: "wrap"
   },
   navigationTitle: {
     width: "4em",
-    // height: "100%",
     padding: "6px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  shortcutKey: {
+    backgroundColor: "#F3F4F6",
+    padding: "3px 8px",
+    borderRadius: "4px",
+    fontSize: "13px",
+    fontFamily: "'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace",
+    border: "1px solid #E5E7EB"
   }
 });
 
-const CampaignToolbar = props => (
-  <Toolbar style={inlineStyles.toolbar}>
-    <Tooltip title="Return Home">
-      <IconButton
-        onClick={props.onExit}
-        className={css(styles.contactToolbarIconButton)}
-      >
-        <HomeIcon style={{ width: 42 }} htmlColor="white" />
-      </IconButton>
-    </Tooltip>
-    <div className={css(styles.titleArea)}>
-      <div className={css(styles.titleSmall)} style={{ color: "#B0B0B0" }}>
-        Campaign ID: {props.campaign.id}
+const keyboardShortcuts = [
+  { keys: "Ctrl + Enter", action: "Send message" },
+  { keys: "Ctrl + Y", action: "Skip contact" },
+  { keys: "Ctrl + >", action: "Next contact" },
+  { keys: "Ctrl + <", action: "Previous contact" },
+  { keys: "Escape", action: "Close dialogs" },
+  { keys: "Enter / Space", action: "Send (initial messages only)" }
+];
+
+const CampaignToolbar = props => {
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  return (
+    <Toolbar
+      style={{
+        backgroundColor: "#1F2937",
+        color: "#F3F4F6",
+        padding: "0 8px",
+        minHeight: "52px"
+      }}
+    >
+      <Tooltip title="Return Home">
+        <IconButton
+          onClick={props.onExit}
+          className={css(styles.iconButton)}
+        >
+          <HomeIcon style={{ width: 24 }} htmlColor="#F3F4F6" />
+        </IconButton>
+      </Tooltip>
+      <div className={css(styles.titleArea)}>
+        <div className={css(styles.campaignId)}>
+          Campaign {props.campaign.id}
+        </div>
+        <div className={css(styles.campaignTitle)} title={props.campaign.title}>
+          {props.campaign.title}
+        </div>
       </div>
-      <div className={css(styles.titleBig)} title={props.campaign.title}>
-        {props.campaign.title}
-      </div>
-    </div>
-    {props.onSideboxButtonClick && (
-      <React.Fragment>
-        <div className={css(styles.grow)}></div>
+      <div className={css(styles.grow)}></div>
+      <Tooltip title="Keyboard Shortcuts">
+        <IconButton
+          onClick={() => setShortcutsOpen(true)}
+          className={css(styles.iconButton)}
+        >
+          <HelpOutlineIcon htmlColor="#9CA3AF" style={{ width: 20 }} />
+        </IconButton>
+      </Tooltip>
+      {props.onSideboxButtonClick && (
         <div
           className={`${css(styles.navigation)} ${css(
             styles.navigationSideBox
@@ -129,17 +156,42 @@ const CampaignToolbar = props => (
           <Tooltip title="Open Details">
             <IconButton
               onClick={props.onSideboxButtonClick}
-              className={css(styles.contactToolbarIconButton)}
-              style={{ flex: "0 0 56px", width: "45px" }}
+              className={css(styles.iconButton)}
             >
-              <BuildIcon htmlColor="white" />
+              <BuildIcon htmlColor="#9CA3AF" />
             </IconButton>
           </Tooltip>
         </div>
-      </React.Fragment>
-    )}
-  </Toolbar>
-);
+      )}
+      <Dialog
+        open={shortcutsOpen}
+        onClose={() => setShortcutsOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Keyboard Shortcuts</DialogTitle>
+        <DialogContent>
+          <Table size="small">
+            <TableBody>
+              {keyboardShortcuts.map(shortcut => (
+                <TableRow key={shortcut.keys}>
+                  <TableCell>
+                    <code className={css(styles.shortcutKey)}>
+                      {shortcut.keys}
+                    </code>
+                  </TableCell>
+                  <TableCell style={{ fontSize: "14px" }}>
+                    {shortcut.action}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </DialogContent>
+      </Dialog>
+    </Toolbar>
+  );
+};
 
 CampaignToolbar.propTypes = {
   campaign: PropTypes.object,

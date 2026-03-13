@@ -15,7 +15,10 @@ import ThemeContext from "../containers/context/ThemeContext";
 const formatTheme = newTheme => {
   return {
     ...defaultTheme,
-    palette: newTheme.palette
+    palette: {
+      ...defaultTheme.palette,
+      ...newTheme.palette
+    }
   };
 };
 

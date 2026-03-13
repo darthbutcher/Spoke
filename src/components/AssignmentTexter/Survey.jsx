@@ -44,7 +44,8 @@ class AssignmentTexterSurveys extends Component {
     super(props);
 
     this.state = {
-      showAllQuestions: false
+      showAllQuestions: false,
+      justSelectedAnswer: null
     };
   }
 
@@ -170,50 +171,58 @@ class AssignmentTexterSurveys extends Component {
         </h3>
         {(
           step.question.filteredAnswerOptions || step.question.answerOptions
-        ).map((answerOption, index) => (
-          <ListItem
-            button
-            value={answerOption.value}
-            onClick={() => {
-              this.handleSelectChange(
-                step,
-                index,
-                responseValue === answerOption.value
-                  ? "clearResponse"
-                  : answerOption.value
-              );
+        ).map((answerOption, index) => {
+          const isSelected = responseValue === answerOption.value;
+          const justSelected =
+            this.state.justSelectedAnswer === answerOption.value;
+          const selectAndClose = () => {
+            const newValue = isSelected ? "clearResponse" : answerOption.value;
+            this.handleSelectChange(step, index, newValue);
+            this.setState({
+              justSelectedAnswer: isSelected ? null : answerOption.value
+            });
+            setTimeout(() => {
+              this.setState({ justSelectedAnswer: null });
               this.props.onRequestClose();
-            }}
-            onKeyPress={evt => {
-              if (evt.key === "Enter") {
-                this.handleSelectChange(
-                  step,
-                  index,
-                  responseValue === answerOption.value
-                    ? "clearResponse"
-                    : answerOption.value
-                );
-                this.props.onRequestClose();
+            }, 400);
+          };
+          return (
+            <ListItem
+              button
+              value={answerOption.value}
+              onClick={selectAndClose}
+              onKeyPress={evt => {
+                if (evt.key === "Enter") {
+                  selectAndClose();
+                }
+              }}
+              key={`cur${index}_${answerOption.value}`}
+              style={
+                justSelected
+                  ? {
+                      backgroundColor: "#e8f5e9",
+                      transition: "background-color 0.2s ease-in"
+                    }
+                  : { transition: "background-color 0.2s ease-out" }
               }
-            }}
-            key={`cur${index}_${answerOption.value}`}
-          >
-            <ListItemText
-              primary={answerOption.value}
-              secondary={
-                answerOption.nextInteractionStep &&
-                answerOption.nextInteractionStep.script
-                  ? answerOption.nextInteractionStep.script
-                  : null
-              }
-            />
-            {responseValue === answerOption.value && (
-              <ListItemIcon>
-                <ClearIcon />
-              </ListItemIcon>
-            )}
-          </ListItem>
-        ))}
+            >
+              <ListItemText
+                primary={answerOption.value}
+                secondary={
+                  answerOption.nextInteractionStep &&
+                  answerOption.nextInteractionStep.script
+                    ? answerOption.nextInteractionStep.script
+                    : null
+                }
+              />
+              {(isSelected || justSelected) && (
+                <ListItemIcon>
+                  <ClearIcon />
+                </ListItemIcon>
+              )}
+            </ListItem>
+          );
+        })}
       </List>
     );
   }

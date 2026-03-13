@@ -27,19 +27,29 @@ const defaultStyles = {
     fontStyle: "italic"
   },
   sent: {
-    fontSize: "13px",
+    fontSize: "15px",
     textAlign: "right",
     marginLeft: "24px"
   },
   received: {
-    fontSize: "13px",
+    fontSize: "15px",
     marginRight: "24px"
   },
   mediaItem: {
-    marginTop: "5px",
-    backgroundColor: "rgba(255,255,255,.5)"
+    marginTop: "8px",
+    backgroundColor: "rgba(255,255,255,.5)",
+    borderRadius: "8px"
   }
 };
+
+function formatTimestamp(createdAt) {
+  const messageTime = moment.utc(createdAt);
+  const hoursAgo = moment().diff(messageTime, "hours");
+  if (hoursAgo < 24) {
+    return messageTime.fromNow();
+  }
+  return messageTime.local().format("MMM D, h:mm A");
+}
 
 function SecondaryText(props) {
   const { message, review, currentUser, organizationId } = props;
@@ -52,8 +62,8 @@ function SecondaryText(props) {
     !message.isFromContact
   ) {
     return (
-      <span style={{ fontSize: "90%", display: "block", paddingTop: "5px" }}>
-        Sent {moment.utc(message.createdAt).fromNow()} by{" "}
+      <span style={{ fontSize: "12px", display: "block", paddingTop: "4px", opacity: 0.7 }}>
+        Sent {formatTimestamp(message.createdAt)} by{" "}
         <RouterLink
           target="_blank"
           to={`/app/${organizationId}/account/${message.userId}`}
@@ -65,8 +75,8 @@ function SecondaryText(props) {
   }
 
   return (
-    <span style={{ fontSize: "90%", display: "block", paddingTop: "5px" }}>
-      {moment.utc(message.createdAt).fromNow()}
+    <span style={{ fontSize: "12px", display: "block", paddingTop: "4px", opacity: 0.7 }}>
+      {formatTimestamp(message.createdAt)}
     </span>
   );
 }
@@ -160,13 +170,15 @@ export class MessageList extends React.Component {
     let received = defaultStyles.received;
     let sent = defaultStyles.sent;
     if (styles) {
+      const isDark = muiTheme.palette.type === "dark";
       received = Object.assign({}, styles.messageReceived, {
-        color: muiTheme.palette.common.white,
-        backgroundColor: muiTheme.palette.info.main
+        color: isDark ? muiTheme.palette.text.primary : "#1A1A2E",
+        backgroundColor: isDark ? muiTheme.palette.grey[700] : "#FFFFFF",
+        boxShadow: isDark ? "none" : "0 1px 2px rgba(0,0,0,0.06)"
       });
       sent = Object.assign({}, styles.messageSent, {
-        color: muiTheme.palette.text.primary,
-        backgroundColor: muiTheme.palette.background.default
+        color: "#FFFFFF",
+        backgroundColor: muiTheme.palette.primary.main
       });
     }
 

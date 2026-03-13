@@ -10,14 +10,20 @@ import GSForm from "../forms/GSForm";
 import GSTextField from "../forms/GSTextField";
 import withMuiTheme from "../../containers/hoc/withMuiTheme";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
 import SearchBar from "material-ui-search-bar";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import CreateIcon from "@material-ui/icons/Create";
+import SendIcon from "@material-ui/icons/Send";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+import BlockIcon from "@material-ui/icons/Block";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
+import ReplayIcon from "@material-ui/icons/Replay";
 
 import * as yup from "yup";
 import Form from "react-formal";
@@ -64,17 +70,14 @@ export class AssignmentTexterContactControls extends React.Component {
     }
 
     this.state = {
-      contactOptOutMessage: "",
       questionResponses,
       filteredCannedResponses: props.campaign.cannedResponses,
-      optOutMessageText: "",
       responsePopoverOpen: false,
       answerPopoverOpen: false,
       sideboxCloses: {},
       sideboxOpens: {},
       messageText: this.getStartingMessageText(),
       cannedResponseScript: null,
-      optOutDialogOpen: false,
       currentShortcutSpace: 0,
       messageFocus: false,
       availableSteps,
@@ -226,7 +229,6 @@ export class AssignmentTexterContactControls extends React.Component {
 
     if (evt.key === "Escape") {
       this.setState({
-        optOutDialogOpen: false,
         responsePopoverOpen: false,
         answerPopoverOpen: false
       });
@@ -240,12 +242,7 @@ export class AssignmentTexterContactControls extends React.Component {
       evt.ctrlKey
     ) {
       evt.preventDefault();
-      if (this.state.optOutDialogOpen) {
-        const { optOutMessageText } = this.state;
-        this.props.onOptOut({ optOutMessageText });
-      } else {
-        this.handleClickSendMessageButton(true);
-      }
+      this.handleClickSendMessageButton(true);
       return;
     }
 
@@ -277,10 +274,6 @@ export class AssignmentTexterContactControls extends React.Component {
       return;
     }
   };
-
-  optOutSchema = yup.object({
-    optOutMessageText: yup.string()
-  });
 
   messageSchema = yup.object({
     messageText: yup
@@ -344,29 +337,8 @@ export class AssignmentTexterContactControls extends React.Component {
     }
   };
 
-  handleOpenDialog = async () => {
-    // delay to avoid accidental tap pass-through with focusing on
-    // the text field -- this is annoying on mobile where the keyboard
-    // pops up, inadvertantly
-    const optOutMessage = (
-      await this.props.getOptOutMessage(
-        this.props.organizationId,
-        this.props.contact.zip,
-        this.props.campaign.organization.optOutMessage
-      )
-    ).data.getOptOutMessage;
-    this.setState({contactOptOutMessage: optOutMessage, optOutMessageText: optOutMessage});
-    const update = { optOutDialogOpen: true };
-    if (this.refs.answerButtons) {
-      // store this, because on-close, we lose this
-      update.currentShortcutSpace = this.refs.answerButtons.offsetHeight;
-    }
-    const self = this;
-    setTimeout(() => self.setState(update), 200);
-  };
-
-  handleCloseDialog = () => {
-    this.setState({ optOutDialogOpen: false });
+  handleOneClickOptOut = async () => {
+    this.props.onOptOut({ optOutMessageText: "" });
   };
 
   handleQuestionResponseChange = ({
@@ -588,6 +560,14 @@ export class AssignmentTexterContactControls extends React.Component {
     );
   }
 
+  handleSkipWithReason = async (reason) => {
+    this.setState({ skipMenuAnchorEl: null });
+    await this.props.onEditStatus("closed", true);
+    if (reason) {
+      console.log(`Contact ${this.props.contact.id} skipped: ${reason}`);
+    }
+  };
+
   renderNeedsResponseToggleButton(contact) {
     const { messageStatus } = contact;
     let button = null;
@@ -609,138 +589,84 @@ export class AssignmentTexterContactControls extends React.Component {
       };
       if (status === "closed") {
         button = (
-          <Button
-            onClick={onClick("needsResponse")}
-            style={{
-              color: this.props.muiTheme.palette.text.primary,
-              backgroundColor: this.props.muiTheme.palette.background.default,
-              flex: "1 1 auto"
-            }}
-            disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
-            Reopen
-          </Button>
+          <Tooltip title="Reopen">
+            <span>
+              <IconButton
+                onClick={onClick("needsResponse")}
+                disabled={!!this.props.contact.optOut}
+                style={{
+                  backgroundColor: this.props.muiTheme.palette.background.paper,
+                  border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                  borderRadius: "8px",
+                  padding: "8px"
+                }}
+                size="small"
+              >
+                <ReplayIcon
+                  style={{
+                    color: this.props.muiTheme.palette.text.secondary,
+                    fontSize: "20px"
+                  }}
+                />
+              </IconButton>
+            </span>
+          </Tooltip>
         );
       } else {
         button = (
-          <Button
-            onClick={onClick("closed", true)}
-            style={{
-              color: this.props.muiTheme.palette.text.primary,
-              backgroundColor: this.props.muiTheme.palette.background.default
-            }}
-            disabled={!!this.props.contact.optOut}
-            color="default"
-            variant="contained"
-          >
-            Skip
-          </Button>
+          <React.Fragment>
+            <Tooltip title="Skip">
+              <span>
+                <IconButton
+                  onClick={(event) => {
+                    this.setState({ skipMenuAnchorEl: event.currentTarget });
+                  }}
+                  disabled={!!this.props.contact.optOut}
+                  style={{
+                    backgroundColor: this.props.muiTheme.palette.background.paper,
+                    border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                    borderRadius: "8px",
+                    padding: "8px"
+                  }}
+                  size="small"
+                >
+                  <SkipNextIcon
+                    style={{
+                      color: this.props.muiTheme.palette.text.secondary,
+                      fontSize: "20px"
+                    }}
+                  />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Menu
+              anchorEl={this.state.skipMenuAnchorEl}
+              open={Boolean(this.state.skipMenuAnchorEl)}
+              onClose={() => this.setState({ skipMenuAnchorEl: null })}
+            >
+              <MenuItem onClick={() => this.handleSkipWithReason(null)}>
+                Skip (no reason)
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Wrong number")}>
+                Wrong number
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Not interested")}>
+                Not interested
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Already contacted")}>
+                Already contacted
+              </MenuItem>
+              <MenuItem onClick={() => this.handleSkipWithReason("Call back later")}>
+                Call back later
+              </MenuItem>
+            </Menu>
+          </React.Fragment>
         );
       }
     }
     return button;
   }
 
-  renderOptOutDialog() {
-    if (!this.state.optOutDialogOpen) {
-      return null;
-    }
-    return (
-      <Card className={css(flexStyles.sectionOptOutDialog)}>
-        <CardHeader title="Opt out user" />
-        <CardContent className={css(flexStyles.sectionOptOutDialog)}>
-          <GSForm
-            className={css(flexStyles.sectionOptOutDialog)}
-            schema={this.optOutSchema}
-            onChange={({ optOutMessageText }) =>
-              this.setState({ optOutMessageText })
-            }
-            value={{ optOutMessageText: this.state.optOutMessageText }}
-            onSubmit={this.props.onOptOut}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "left"
-              }}
-            >
-              <Button
-                style={{
-                  margin: "9px",
-                  color:
-                    this.state.optOutMessageText ===
-                      this.state.contactOptOutMessage
-                      ? "white"
-                      : "#494949",
-                  backgroundColor:
-                    this.state.optOutMessageText ===
-                      this.state.contactOptOutMessage
-                      ? "#727272"
-                      : "white"
-                }}
-                onClick={() => {
-                  this.setState({
-                    optOutMessageText: this.state.contactOptOutMessage
-                  });
-                }}
-                variant="contained"
-              >
-                Standard Message
-              </Button>
-              <Button
-                style={{
-                  margin: "0 9px 0 9px",
-                  color:
-                    this.state.optOutMessageText === "" ? "white" : "#494949",
-                  backgroundColor:
-                    this.state.optOutMessageText === "" ? "#727272" : "white"
-                }}
-                onClick={() => {
-                  this.setState({ optOutMessageText: "" });
-                }}
-                variant="contained"
-              >
-                No Message
-              </Button>
-            </div>
-            <Form.Field
-              as={GSTextField}
-              name="optOutMessageText"
-              fullWidth
-              multiline
-              rows={2}
-            />
-            <div className={css(flexStyles.subSectionOptOutDialogActions)}>
-              <Button
-                className={css(flexStyles.button)}
-                style={inlineStyles.inlineBlock}
-                onClick={this.handleCloseDialog}
-                variant="outlined"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                style={{
-                  ...inlineStyles.inlineBlock,
-                  borderColor: "#790000",
-                  color: "white",
-                  marginLeft: "9px",
-                  backgroundColor: "#BC0000"
-                }}
-                variant="contained"
-              >
-                &crarr; Opt-Out
-              </Button>
-            </div>
-          </GSForm>
-        </CardContent>
-      </Card>
-    );
-  }
 
   renderMessagingRowMessage(enabledSideboxes) {
     const { cannedResponseScript } = this.state;
@@ -782,6 +708,26 @@ export class AssignmentTexterContactControls extends React.Component {
             maxRows={6}
           />
         </GSForm>
+        {window.MAX_MESSAGE_LENGTH && (
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: "12px",
+              padding: "2px 4px 0",
+              color:
+                (this.state.messageText || "").length >
+                window.MAX_MESSAGE_LENGTH
+                  ? "#E53935"
+                  : (this.state.messageText || "").length >
+                    window.MAX_MESSAGE_LENGTH * 0.9
+                  ? "#F9A825"
+                  : "#9CA3AF"
+            }}
+          >
+            {(this.state.messageText || "").length} /{" "}
+            {window.MAX_MESSAGE_LENGTH}
+          </div>
+        )}
       </div>
     );
   }
@@ -928,9 +874,13 @@ export class AssignmentTexterContactControls extends React.Component {
               });
             }}
             style={{
-              marginRight: "9px",
-              backgroundColor: isCurrentAnswer(opt) ? "#727272" : "white",
-              color: isCurrentAnswer(opt) ? "white" : "#494949"
+              marginRight: "8px",
+              backgroundColor: isCurrentAnswer(opt) ? "#2E7D52" : "#FFFFFF",
+              color: isCurrentAnswer(opt) ? "#FFFFFF" : "#374151",
+              borderColor: isCurrentAnswer(opt) ? "#2E7D52" : "#E5E7EB",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 500
             }}
             variant="outlined"
           >
@@ -944,11 +894,15 @@ export class AssignmentTexterContactControls extends React.Component {
               this.handleCannedResponseChange(script);
             }}
             style={{
-              marginRight: "9px",
-              color: isCurrentCannedResponse(script) ? "white" : "#494949",
+              marginRight: "8px",
+              color: isCurrentCannedResponse(script) ? "#FFFFFF" : "#374151",
               backgroundColor: isCurrentCannedResponse(script)
-                ? "#727272"
-                : "white"
+                ? "#2E7D52"
+                : "#FFFFFF",
+              borderColor: isCurrentCannedResponse(script) ? "#2E7D52" : "#E5E7EB",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 500
             }}
             title={script.title}
             variant="outlined"
@@ -972,58 +926,80 @@ export class AssignmentTexterContactControls extends React.Component {
         !availableSteps[0].question.answerOptions.length);
     return (
       <div className={css(flexStyles.subButtonsExitButtons)}>
-        <Button
-          onClick={
-            !disabled ? this.handleOpenAnswerResponsePopover : noAction => {}
-          }
-          style={{
-            backgroundColor: this.props.muiTheme.palette.background.default,
-            color: this.props.muiTheme.palette.text.primary
-          }}
-          disabled={disabled}
-          variant="outlined"
-        >
-          All Responses{" "}
-          <ArrowDropDownIcon style={{ verticalAlign: "middle" }} />
-        </Button>
+        <Tooltip title="All Responses">
+          <span>
+            <IconButton
+              onClick={
+                !disabled ? this.handleOpenAnswerResponsePopover : () => {}
+              }
+              disabled={disabled}
+              style={{
+                backgroundColor: this.props.muiTheme.palette.background.paper,
+                border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                borderRadius: "8px",
+                padding: "8px"
+              }}
+              size="small"
+            >
+              <QuestionAnswerIcon
+                style={{
+                  color: disabled
+                    ? this.props.muiTheme.palette.grey[400]
+                    : this.props.muiTheme.palette.text.secondary,
+                  fontSize: "20px"
+                }}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
 
-        <Button
-          {...dataTest("optOut")}
-          onClick={this.handleOpenDialog}
-          style={{
-            color: this.props.muiTheme.palette.error.main,
-            backgroundColor: this.props.muiTheme.palette.background.default
-          }}
-          disabled={!!this.props.contact.optOut}
-          variant="contained"
-        >
-          Opt-out
-        </Button>
+        <Tooltip title="Opt-out">
+          <span>
+            <IconButton
+              {...dataTest("optOut")}
+              onClick={this.handleOneClickOptOut}
+              disabled={!!this.props.contact.optOut}
+              style={{
+                backgroundColor: this.props.muiTheme.palette.background.paper,
+                border: `1px solid ${this.props.muiTheme.palette.divider}`,
+                borderRadius: "8px",
+                padding: "8px"
+              }}
+              size="small"
+            >
+              <BlockIcon
+                style={{
+                  color: this.props.contact.optOut
+                    ? this.props.muiTheme.palette.grey[400]
+                    : this.props.muiTheme.palette.error.main,
+                  fontSize: "20px"
+                }}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
       </div>
     );
   }
 
   renderMessagingRowSendSkip(contact) {
-    const firstMessage = contact.messageStatus === "needsMessage";
     return (
       <div
         key="renderMessagingRowSendSkip"
         className={css(flexStyles.sectionSend)}
-        style={{ height: "54px" }}
       >
+        {this.renderNeedsResponseToggleButton(contact)}
         <Button
           {...dataTest("send")}
           onClick={this.handleClickSendMessageButton}
           disabled={this.props.disabled || !!this.props.contact.optOut}
-          style={{
-            width: "70%"
-          }}
+          className={css(flexStyles.subSectionSendButton)}
           color="primary"
           variant="contained"
+          endIcon={<SendIcon style={{ fontSize: "18px" }} />}
         >
-          &crarr; Send
+          Send
         </Button>
-        {this.renderNeedsResponseToggleButton(contact)}
       </div>
     );
   }
@@ -1035,10 +1011,6 @@ export class AssignmentTexterContactControls extends React.Component {
       questionResponses,
       currentInteractionStep
     } = this.state;
-
-    if (this.state.optOutDialogOpen) {
-      return this.renderOptOutDialog();
-    }
 
     let currentQuestion = null;
     let currentQuestionAnswered = null;
@@ -1148,8 +1120,8 @@ export class AssignmentTexterContactControls extends React.Component {
           style={{
             backgroundColor:
               this.props.muiTheme.palette.type === "light"
-                ? "#f0f0f0"
-                : this.props.muiTheme.palette.grey[700]
+                ? "#F3F4F6"
+                : this.props.muiTheme.palette.grey[800]
           }}
         >
           {internalComponent}
@@ -1188,8 +1160,8 @@ export class AssignmentTexterContactControls extends React.Component {
         <Empty
           title={
             contact.optOut
-              ? `${contact.firstName} is opted out -- skip this contact`
-              : `This is your first message to ${contact.firstName}`
+              ? `${contact.firstName}${contact.lastName ? ` ${contact.lastName}` : ""} is opted out -- skip this contact`
+              : `This is your first message to ${contact.firstName}${contact.lastName ? ` ${contact.lastName}` : ""}`
           }
           icon={<CreateIcon color="primary" />}
         />,
@@ -1246,8 +1218,8 @@ export class AssignmentTexterContactControls extends React.Component {
         style={{
           backgroundColor:
             this.props.muiTheme.palette.type === "light"
-              ? "#d6d7df"
-              : this.props.muiTheme.palette.grey[800]
+              ? "#F7F8FA"
+              : this.props.muiTheme.palette.grey[900]
         }}
       >
         {content}

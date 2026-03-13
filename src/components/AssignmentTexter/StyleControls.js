@@ -1,13 +1,10 @@
 import { StyleSheet, css } from "aphrodite";
 
-const bgGrey = "rgb(214, 215, 223)";
-
 export const messageListStyles = {
-  // passesd directly to <MessageList>
   messageList: {
     overflow: "hidden",
     overflow: "-moz-scrollbars-vertical",
-    padding: 8,
+    padding: "12px 16px",
     display: "flex",
     flexDirection: "column",
     width: "100%"
@@ -16,26 +13,29 @@ export const messageListStyles = {
     textAlign: "left",
     alignSelf: "flex-end",
     marginLeft: "20%",
-    marginRight: "10px",
-    backgroundColor: "white",
-    borderRadius: "16px",
-    marginBottom: "10px",
-    fontSize: "95%",
+    marginRight: "8px",
+    backgroundColor: "#2E7D52",
+    color: "#FFFFFF",
+    borderRadius: "18px 18px 4px 18px",
+    marginBottom: "4px",
+    fontSize: "15px",
+    lineHeight: "1.4",
     width: "fit-content",
     maxWidth: "500px"
   },
   messageReceived: {
     alignSelf: "flex-start",
     marginRight: "20%",
-    marginLeft: "10px",
-    color: "white",
-    backgroundColor: "hsla(206, 99%, 31%, 0.74)", //#01579B",
-    borderRadius: "16px",
-    fontSize: "110%",
-    lineHeight: "120%",
-    marginBottom: "10px",
+    marginLeft: "8px",
+    color: "#1A1A2E",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "18px 18px 18px 4px",
+    fontSize: "15px",
+    lineHeight: "1.4",
+    marginBottom: "4px",
     width: "fit-content",
-    maxWidth: "500px"
+    maxWidth: "500px",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.06)"
   }
 };
 
@@ -46,14 +46,14 @@ export const inlineStyles = {
   exitTexterIconButton: {
     float: "left",
     padding: "3px",
-    height: "56px",
+    height: "48px",
     zIndex: 100,
     top: 0,
     left: "-12px"
   },
   flatButtonLabel: {
     textTransform: "none",
-    fontWeight: "bold"
+    fontWeight: 500
   }
 };
 
@@ -67,17 +67,12 @@ export const flexStyles = StyleSheet.create({
     right: 0,
     display: "flex",
     flexDirection: "column",
-    //messages can be scrolled through and height/width is responsive
     height: "100%",
-    "@media(max-width: 420px)": {
-      fontFamily: "Poppins"
-    }
+    fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   },
   popoverSideboxesInner: {
-    // expand to fill the whole popover
     width: "100%",
     height: "100%",
-    // show campaign header in-view
     top: "50px",
     left: "18px",
     padding: "20px"
@@ -86,7 +81,6 @@ export const flexStyles = StyleSheet.create({
     width: "85%",
     height: "85%",
     "@media(min-height: 800px)": {
-      // if it's too tall, the current question options are too far away
       height: "50%"
     }
   },
@@ -94,11 +88,11 @@ export const flexStyles = StyleSheet.create({
     float: "right",
     width: "4em",
     marginRight: "2em",
-    fontWeight: "normal",
-    fontSize: "80%"
+    fontWeight: 400,
+    fontSize: "13px"
   },
   popoverLinkColor: {
-    color: "rgb(81, 82, 89)"
+    color: "#6B7280"
   },
   sectionHeaderToolbar: {
     flex: "0 0 auto"
@@ -114,29 +108,27 @@ export const flexStyles = StyleSheet.create({
     }
   },
   sectionSideBoxHeader: {
-    height: 56,
-    backgroundColor: "rgba(126, 128, 139, .7)"
+    height: 52,
+    backgroundColor: "rgba(107, 114, 128, 0.15)"
   },
   sectionSideBoxContent: {
     padding: 24,
-    borderLeft: "1px solid #C1C3CC"
+    borderLeft: "1px solid #E5E7EB"
   },
   superSectionMessageBox: {
     height: "100%",
-    "@media(min-height: 300px) and (max-Height: 700px)": {
+    "@media(min-height: 300px) and (max-height: 700px)": {
       height: "100%"
     },
-    "@media(min-height: 701px) and (max-Height: 1000px)": {
+    "@media(min-height: 701px) and (max-height: 1000px)": {
       height: "53%"
     },
     overflowY: "scroll",
     overflow: "-moz-scrollbars-vertical",
     overflowX: "hidden",
-    // for sidebar
     display: "flex",
     flexDirection: "row"
   },
-  /// * Section Scrolling Message Thread
   sectionMessageThread: {
     display: "flex",
     justifyContent: "center",
@@ -160,27 +152,23 @@ export const flexStyles = StyleSheet.create({
     flexGrow: 1,
     maxHeight: "100%"
   },
-  /// * Section OptOut Dialog
   sectionOptOutDialog: {
-    padding: "4px 10px 9px 10px",
+    padding: "8px 16px",
     zIndex: 2000,
     backgroundColor: "white",
     overflow: "visible",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
     }
   },
   subSectionOptOutDialogActions: {
-    marginTop: 20,
+    marginTop: 16,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    gap: "8px"
   },
-  /// * Section Texting Input Field
   sectionMessageField: {
-    // messageField
     flex: "0 0 20px",
     padding: "0px 16px",
     marginBottom: "8px"
@@ -190,113 +178,99 @@ export const flexStyles = StyleSheet.create({
       overflowY: "scroll !important"
     }
   },
-  /// * Section Reply/Exit Buttons
   sectionButtons: {
     flexGrow: "0",
     flexShrink: "0",
-    // flexBasis: ${130px|190px}", // stretches and shrinks more quickly than message
     flexDirection: "column",
     display: "flex",
-    // flexWrap: "wrap",
     overflow: "hidden",
     position: "relative",
-    paddingLeft: 12
+    padding: "0 16px"
   },
   subButtonsAnswerButtons: {
-    flex: "1 1 auto", // keeps bottom buttons in place
-    // height:105: webkit needs constraint on height sometimes
-    //   during the inflection point of showing the shortcut-buttons
-    //   without the height, the exit buttons get pushed down oddly
-    // internal:
-    margin: "9px 0px 0px 9px",
+    flex: "1 1 auto",
+    margin: "4px 0",
     width: "100%"
-    // similar to 572 below, but give room for other shortcut-buttons
   },
   subSubButtonsAnswerButtonsCurrentQuestion: {
-    marginBottom: "12px",
-    //flex: "0 0 auto",
+    marginBottom: "8px",
     width: "100%",
-    // for mobile:
     whiteSpace: "nowrap",
-    overflow: "hidden"
+    overflow: "hidden",
+    fontSize: "14px",
+    color: "#6B7280"
   },
   subSubAnswerButtonsColumns: {
     height: "0px",
     "@media(min-height: 600px)": {
-      height: "37px" // TODO
+      height: "37px"
     },
     display: "inline-block",
-    //flex: "1 1 50%",
     overflow: "hidden",
     position: "relative"
   },
   subButtonsExitButtons: {
-    // next/prev/skip/optout
-    // width: "100%", default is better on mobile
-    height: "40px",
-    margin: "9px",
-    // default works better for mobile right margin
-    // flex: "0 0 40px",
-    // internal:
     display: "flex",
-    flexDirection: "column",
-    flexWrap: "wrap",
-    alignContent: "space-between",
-    // to 'win' against absoslute positioned content above it:
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "8px",
+    padding: "4px 0",
     zIndex: "10",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
+    },
+    "@media(max-width: 450px)": {
+      gap: "4px"
     }
   },
-  /// * Section Send Button
   sectionSend: {
-    //sendButtonWrapper
-    height: "72px",
     flex: `0 0 auto`,
     display: "flex",
-    flexDirection: "column",
-    flexWrap: "wrap",
-    alignContent: "space-between",
-    padding: "9px 9px 9px 21px",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px 16px 12px",
     "@media (hover: hover) and (pointer: fine)": {
-      // for touchpads and phones, the edge of the tablet is easier
-      // vs for desktops, we want to maximize how far the mouse needs to travel
       maxWidth: "554px"
+    },
+    "@media(max-width: 450px)": {
+      padding: "8px 12px 12px"
     }
   },
   subSectionSendButton: {
     flex: "1 1 auto",
-    width: "70%",
-    height: "100%",
-    //borderRadius: "0px",
-    color: "white"
+    height: "44px",
+    borderRadius: "22px",
+    fontSize: "15px",
+    fontWeight: 500,
+    color: "white",
+    "@media(max-width: 450px)": {
+      minHeight: "48px"
+    }
   },
   flatButton: {
-    height: "40px",
-    border: "1px solid #949494",
-    // FlatButton property, setting here, overrides hover
-    // backgroundColor: "white",
-    borderRadius: "0",
+    height: "36px",
+    border: "1px solid #E5E7EB",
+    borderRadius: "8px",
     boxShadow: "none",
     maxWidth: "300px",
+    fontSize: "13px",
     "@media(max-width: 450px)": {
-      // mobile crunch
-      minWidth: "auto"
+      minWidth: "auto",
+      minHeight: "44px"
     }
   },
   button: {
     backgroundColor: "#FFF",
     maxWidth: "300px",
+    borderRadius: "8px",
     "@media(max-width: 450px)": {
-      // mobile crunch
-      minWidth: "auto"
+      minWidth: "auto",
+      minHeight: "44px"
     }
   },
   flatButtonLabelMobile: {
     "@media(max-width: 327px)": {
-      // mobile crunch
       display: "none"
     }
   }
